@@ -1,0 +1,12 @@
+{
+  "name": "Zombie Shooter",
+  "short_name": "Zombie",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "icons": [{
+    "src": "static/images/ui/icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
+}
