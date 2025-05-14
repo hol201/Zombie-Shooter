@@ -11,13 +11,22 @@
         
         #mobileControls {
             position: fixed;
-            bottom: 20px;
+            bottom: 0;
             width: 100%;
+            height: 120px;
             display: none;
-            justify-content: space-around;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
             z-index: 10000;
-            padding: 0 10px;
+            background: rgba(0,0,0,0.7);
         }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+        }
+
         .mobile-btn {
             width: 60px;
             height: 60px;
@@ -27,62 +36,169 @@
             color: white;
             font-size: 24px;
             touch-action: manipulation;
-            opacity: 0.8;
+        }
+
+        .attack-btn {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,0,0,0.3);
+        }
+
+        .weapon-selector {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 10000;
+        }
+
+        .weapon-icon {
+            width: 64px;
+            height: 64px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .weapon-icon.active {
+            opacity: 1;
+            border-color: #3498db;
+            transform: scale(1.1);
+        }
+
+        #gameCanvas {
+            image-rendering: pixelated;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hud {
+            position: fixed;
+            color: #fff;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+        }
+
+        #player1Hud { 
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #pauseBtn { 
+            top: 10px;
+            right: 80px;
+            padding: 8px 15px;
+        }
+
+        .health-bar {
+            width: 80px;
+            height: 8px;
+            background: #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: #e74c3c;
+            transition: width 0.3s;
         }
 
         #mainMenuBg { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
             background: url('./static/images/ui/menu_bg.jpg') no-repeat center/cover; 
-            filter: brightness(0.7); z-index: 999; 
+            filter: brightness(0.7); 
+            z-index: 999; 
         }
+
         #mainMenu { 
-            position: fixed; top: 50%; left: 50%; 
-            transform: translate(-50%,-50%); text-align: center; 
-            color: #fff; z-index: 1000; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%,-50%); 
+            text-align: center; 
+            color: #fff; 
+            z-index: 1000; 
         }
+
         .menu-btn { 
-            display: block; width: 200px; margin: 10px auto; padding: 15px; 
-            font-size: 1.2em; background: #3498db; border: none; 
-            border-radius: 5px; color: white; cursor: pointer; 
+            display: block; 
+            width: 200px; 
+            margin: 10px auto; 
+            padding: 15px; 
+            font-size: 1.2em; 
+            background: #3498db; 
+            border: none; 
+            border-radius: 5px; 
+            color: white; 
+            cursor: pointer; 
             transition: all 0.2s; 
         }
-        .menu-btn:hover { transform: scale(1.05); }
-        .menu-btn.active { background: #e74c3c; box-shadow: 0 0 15px #e74c3c; }
-        #gameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
-        #gameCanvas { image-rendering: pixelated; }
-        .hud { 
-            position: fixed; color: #fff; background: rgba(0,0,0,0.7); 
-            padding: 10px; border-radius: 5px; font-size: 14px; 
-        }
-        #player1Hud { top: 20px; left: 20px; }
-        #player2Hud { top: 20px; right: 20px; }
-        .powerup { position: absolute; width: 40px; height: 40px; background-size: cover; }
-        .weapon-icon {
-            width: 32px; height: 32px; background-size: cover;
-            display: inline-block; margin-left: 10px; vertical-align: middle;
-        }
-        .sound-controls {
-            position: fixed; bottom: 20px; left: 20px;
-            color: white; background: rgba(0,0,0,0.7);
-            padding: 10px; border-radius: 5px; z-index: 1001;
-            display: grid;
-            gap: 10px;
-            width: 250px;
-        }
-        #pauseBtn { 
-            position: fixed; 
-            top: 80px;
-            right: 20px;
-            padding: 10px 20px; 
-            z-index: 1002;
+
+        @media (max-width: 768px) {
+            .menu-btn {
+                width: 80vw;
+                font-size: 1.5em;
+                padding: 20px;
+            }
+            
+            #mainMenu h1 {
+                font-size: 2.5em;
+                margin-bottom: 30px;
+            }
+            
+            #mobileControls {
+                display: flex;
+                padding: 5px;
+            }
+            
+            .mobile-btn {
+                width: 15vw;
+                height: 15vw;
+                font-size: 6vw;
+            }
+            
+            .weapon-icon {
+                width: 12vw;
+                height: 12vw;
+            }
+            
+            .hud {
+                font-size: 3vw;
+                padding: 2vw;
+            }
+            
+            #pauseBtn {
+                right: 5px;
+                padding: 2vw;
+            }
         }
     </style>
 </head>
 <body>
     <div id="mobileControls">
-        <button class="mobile-btn" ontouchstart="moveLeft()" ontouchend="stopMove()">←</button>
-        <button class="mobile-btn" ontouchstart="shoot()">🔫</button>
-        <button class="mobile-btn" ontouchstart="moveRight()" ontouchend="stopMove()">→</button>
+        <div class="control-group">
+            <button class="mobile-btn" id="moveLeft">←</button>
+            <button class="mobile-btn" id="jumpBtn">↑</button>
+            <button class="mobile-btn" id="moveRight">→</button>
+        </div>
+        <button class="mobile-btn attack-btn" id="attackBtn">⚡</button>
     </div>
 
     <div id="mainMenuBg"></div>
@@ -102,20 +218,22 @@
 
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
-        <div class="hud" id="player1Hud">P1 Здоровье: <span class="health">100</span> | Патроны: <span class="ammo">∞</span> 
-            <div class="weapon-icon"></div>
+        <div class="hud" id="player1Hud">
+            <div class="health-bar">
+                <div class="health-fill" style="width: 100%"></div>
+            </div>
+            <div>
+                <div>Патроны: <span class="ammo">∞</span></div>
+                <div>Счёт: <span id="score">0</span></div>
+            </div>
         </div>
-        <div class="hud" id="player2Hud" style="display:none">P2 Здоровье: <span class="health">100</span> | Патроны: <span class="ammo">∞</span> 
-            <div class="weapon-icon"></div>
-        </div>
-        <div class="hud" style="top:60px;left:20px">Счёт: <span id="score">0</span></div>
-        <button class="menu-btn" id="pauseBtn">Пауза</button>
+        <button class="hud" id="pauseBtn">⏸️</button>
     </div>
 
-    <div class="sound-controls">
-        <div>Громкость музыки: <input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.5"></div>
-        <div>Громкость криков: <input type="range" id="screamVolume" min="0" max="1" step="0.1" value="0.5"></div>
-        <div>Громкость эффектов: <input type="range" id="sfxVolume" min="0" max="1" step="0.1" value="0.5"></div>
+    <div class="weapon-selector">
+        <div class="weapon-icon active" data-weapon="pistol" style="background-image: url('static/images/weapons/pistol.png')"></div>
+        <div class="weapon-icon" data-weapon="knife" style="background-image: url('static/images/weapons/knife.png')"></div>
+        <div class="weapon-icon" data-weapon="axe" style="background-image: url('static/images/weapons/axe.png')"></div>
     </div>
 
 <script>
@@ -125,28 +243,20 @@ const DIFFICULTY = {
     hard: { dmg: 0.15, spawn: 1000, pistolAmmo: 30, speed: 2.5, powerupChance: 0.7 }
 };
 
-// Telegram Integration
-let tg = window.Telegram?.WebApp;
-let gameInstance = null;
-
-function moveLeft() { if(gameInstance) gameInstance.keys['ArrowLeft'] = true; }
-function moveRight() { if(gameInstance) gameInstance.keys['ArrowRight'] = true; }
-function stopMove() { 
-    if(gameInstance) {
-        gameInstance.keys['ArrowLeft'] = false;
-        gameInstance.keys['ArrowRight'] = false;
-    }
-}
-function shoot() { if(gameInstance) gameInstance.keys['Space'] = true; }
-
 class ZombieShooter {
     constructor() {
-        this.tgUser = tg?.initDataUnsafe?.user || null;
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         this.assets = {};
         this.sounds = {};
         this.keys = {};
+        this.touchControls = {
+            left: false,
+            right: false,
+            jump: false,
+            attack: false
+        };
+
         this.state = {
             players: [],
             zombies: [],
@@ -158,6 +268,7 @@ class ZombieShooter {
             kills: 0,
             lastPowerupSpawn: 0
         };
+
         this.config = DIFFICULTY.normal;
         this.mode = 'single';
         this.lastTime = 0;
@@ -167,28 +278,20 @@ class ZombieShooter {
         this.gravity = 0.7;
         this.jumpForce = -10;
         this.groundLevel = 600;
+
         this.attackAnimations = {
             pistol: { frames: 4, duration: 350 },
             knife: { frames: 4, duration: 300 },
             axe: { frames: 4, duration: 200 }
         };
+
         this.weaponIcons = {
             pistol: './static/images/weapons/pistol.png',
             knife: './static/images/weapons/knife.png',
             axe: './static/images/weapons/axe.png'
         };
-        this.init();
-        this.soundCooldowns = {
-            player1Hurt: 0,
-            player2Hurt: 0
-        };
 
-        if(tg) {
-            this.canvas.width = tg.viewportWidth;
-            this.canvas.height = tg.viewportHeight;
-            document.getElementById('mobileControls').style.display = 'flex';
-            tg.enableClosingConfirmation();
-        }
+        this.init();
     }
 
     async init() {
@@ -197,7 +300,7 @@ class ZombieShooter {
             await this.loadSounds();
             this.setupEventListeners();
             this.setupMenuInteractions();
-            this.setupVolumeControls();
+            this.handleResize();
         } catch (error) {
             console.error('Ошибка инициализации:', error);
             alert('Ошибка загрузки ресурсов! Проверьте консоль.');
@@ -268,14 +371,14 @@ class ZombieShooter {
         };
 
         this.sounds = {
-            shoot: loadSound('static/sounds/shoot.wav'),
-            melee: loadSound('static/sounds/melee.wav'),
-            zombieDeath: loadSound('static/sounds/zombie_death.wav'),
-            pickup: loadSound('static/sounds/pickup.mp3'),
-            player1Hurt: loadSound('static/sounds/player1Hurt.mp3'),
-            player2Hurt: loadSound('static/sounds/player2Hurt.mp3'),
-            gameOver: loadSound('static/sounds/gameOver.wav'),
-            bgm: loadSound('static/sounds/bgm.mp3')
+            shoot: loadSound('./static/sounds/shoot.wav'),
+            melee: loadSound('./static/sounds/melee.wav'),
+            zombieDeath: loadSound('./static/sounds/zombie_death.wav'),
+            pickup: loadSound('./static/sounds/pickup.mp3'),
+            player1Hurt: loadSound('./static/sounds/player1Hurt.mp3'),
+            player2Hurt: loadSound('./static/sounds/player2Hurt.mp3'),
+            gameOver: loadSound('./static/sounds/gameOver.wav'),
+            bgm: loadSound('./static/sounds/bgm.mp3')
         };
         this.sounds.bgm.loop = true;
         this.sounds.bgm.volume = 0.5;
@@ -283,19 +386,39 @@ class ZombieShooter {
 
     setupEventListeners() {
         window.addEventListener('keydown', e => {
-            const key = e.key.toLowerCase();
             this.keys[e.code] = true;
-            if (key === 'h' || key === 'р') this.togglePause();
+            if (['h', 'р'].includes(e.key.toLowerCase())) this.togglePause();
         });
 
-        window.addEventListener('keyup', e => {
-            this.keys[e.code] = false;
+        window.addEventListener('keyup', e => this.keys[e.code] = false);
+
+        const handleTouch = (btn, action) => {
+            btn.addEventListener('touchstart', () => this.touchControls[action] = true);
+            btn.addEventListener('touchend', () => this.touchControls[action] = false);
+            btn.addEventListener('touchcancel', () => this.touchControls[action] = false);
+        };
+
+        handleTouch(document.getElementById('moveLeft'), 'left');
+        handleTouch(document.getElementById('moveRight'), 'right');
+        handleTouch(document.getElementById('jumpBtn'), 'jump');
+        handleTouch(document.getElementById('attackBtn'), 'attack');
+
+        document.querySelectorAll('.weapon-icon').forEach(icon => {
+            icon.addEventListener('touchstart', (e) => {
+                document.querySelectorAll('.weapon-icon').forEach(i => i.classList.remove('active'));
+                e.target.classList.add('active');
+                this.state.players[0].currentWeapon = e.target.dataset.weapon;
+            });
         });
 
-        if(tg) {
-            window.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
-            window.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
-        }
+        window.addEventListener('resize', () => this.handleResize());
+    }
+
+    handleResize() {
+        const isMobile = window.innerWidth < 768;
+        this.canvas.width = isMobile ? window.innerWidth : 1024;
+        this.canvas.height = isMobile ? window.innerHeight : 768;
+        this.groundLevel = this.canvas.height * 0.85;
     }
 
     setupMenuInteractions() {
@@ -322,31 +445,6 @@ class ZombieShooter {
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
     }
 
-    setupVolumeControls() {
-        document.getElementById('musicVolume').addEventListener('input', e => {
-            this.sounds.bgm.volume = Math.min(1, Math.max(0, e.target.value));
-        });
-
-        document.getElementById('screamVolume').addEventListener('input', e => {
-            const volume = Math.min(1, Math.max(0, e.target.value));
-            this.sounds.player1Hurt.volume = volume;
-            this.sounds.player2Hurt.volume = volume;
-        });
-
-        document.getElementById('sfxVolume').addEventListener('input', e => {
-            const volume = Math.min(1, Math.max(0, e.target.value));
-            ['shoot', 'melee', 'zombieDeath', 'pickup', 'gameOver'].forEach(name => {
-                this.sounds[name].volume = volume;
-            });
-        });
-    }
-
-    playBGM() {
-        if (this.sounds.bgm.paused) {
-            this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки:', e));
-        }
-    }
-
     startGame() {
         try {
             this.state = {
@@ -362,7 +460,11 @@ class ZombieShooter {
             };
 
             this.setupPlayers();
-            this.setupCanvas();
+            this.handleResize();
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('mainMenuBg').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+            
             this.gameActive = true;
             this.isPaused = false;
             this.lastTime = performance.now();
@@ -398,16 +500,6 @@ class ZombieShooter {
             });
             this.state.players.push(player2);
         }
-    }
-
-    setupCanvas() {
-        if(!tg) {
-            this.canvas.width = 1024;
-            this.canvas.height = 768;
-        }
-        document.getElementById('mainMenu').style.display = 'none';
-        document.getElementById('mainMenuBg').style.display = 'none';
-        document.getElementById('gameContainer').style.display = 'block';
     }
 
     createPlayer(spriteSet, x, y, controls) {
@@ -481,30 +573,10 @@ class ZombieShooter {
         this.state.players.forEach((player) => {
             if (player.health <= 0) return;
 
-            const controls = player.controls;
-            let moved = false;
-
-            if (controls.left.some(code => this.keys[code])) {
-                player.x = Math.max(50, player.x - 5 * deltaFactor);
-                player.direction = -1;
-                moved = true;
-            }
-
-            if (controls.right.some(code => this.keys[code])) {
-                player.x = Math.min(this.canvas.width - 50, player.x + 5 * deltaFactor);
-                player.direction = 1;
-                moved = true;
-            }
-
-            if (moved) {
-                if (Date.now() - player.lastStep > 200) {
-                    player.animationFrame = (player.animationFrame + 1) % 4;
-                    player.lastStep = Date.now();
-                }
-            }
-            player.isMoving = moved;
-
-            if (!player.isJumping && controls.jump.some(code => this.keys[code])) {
+            if(this.touchControls.left) player.x -= 5 * deltaFactor;
+            if(this.touchControls.right) player.x += 5 * deltaFactor;
+            
+            if((this.touchControls.jump || player.controls.jump.some(code => this.keys[code])) && !player.isJumping) {
                 player.velocityY = this.jumpForce;
                 player.isJumping = true;
                 player.jumpStart = Date.now();
@@ -519,18 +591,17 @@ class ZombieShooter {
                 player.isJumping = false;
             }
 
-            if (controls.attack.some(code => this.keys[code]) && 
-                Date.now() - player.lastAttack > player.weapons[player.currentWeapon].cooldown) {
+            if(this.touchControls.attack || player.controls.attack.some(code => this.keys[code])) {
                 this.handleAttack(player);
             }
 
-            controls.weapon1.forEach(code => {
+            player.controls.weapon1.forEach(code => {
                 if (this.keys[code]) player.currentWeapon = 'pistol';
             });
-            controls.weapon2.forEach(code => {
+            player.controls.weapon2.forEach(code => {
                 if (this.keys[code]) player.currentWeapon = 'knife';
             });
-            controls.weapon3.forEach(code => {
+            player.controls.weapon3.forEach(code => {
                 if (this.keys[code]) player.currentWeapon = 'axe';
             });
         });
@@ -616,7 +687,6 @@ class ZombieShooter {
                 const moveDirection = Math.sign(dx);
                 
                 zombie.direction = moveDirection;
-                
                 zombie.x += moveDirection * zombie.speed * deltaFactor;
             }
 
@@ -645,7 +715,6 @@ class ZombieShooter {
 
     updateBullets(deltaTime) {
         const deltaFactor = deltaTime / 16.67;
-        
         this.state.bullets = this.state.bullets.filter(bullet => {
             bullet.x += bullet.direction * bullet.speed * deltaFactor;
             return bullet.x > 0 && bullet.x < this.canvas.width;
@@ -687,7 +756,6 @@ class ZombieShooter {
                     this.state.bullets.splice(bIndex, 1);
                     this.createBlood(zombie.x, zombie.y - 80);
                     this.checkZombieDeath(zombie);
-                    return;
                 }
             });
         });
@@ -728,7 +796,8 @@ class ZombieShooter {
             this.state.players.forEach(player => {
                 if (player.health <= 0) return;
 
-                if (Math.abs(powerup.x - player.x) < 40 && Math.abs(powerup.y - player.y) < 40) {
+                if (Math.abs(powerup.x - player.x) < 40 && 
+                    Math.abs(powerup.y - player.y) < 40) {
                     this.applyPowerup(player, powerup);
                     this.state.powerups.splice(pIndex, 1);
                     this.playSound('pickup');
@@ -895,15 +964,14 @@ class ZombieShooter {
         this.state.players.forEach((player, index) => {
             const hud = document.querySelectorAll('.hud')[index];
             if (hud) {
-                hud.querySelector('.health').textContent = Math.floor(player.health);
+                const healthPercent = (player.health / 100) * 100;
+                hud.querySelector('.health-fill').style.width = `${healthPercent}%`;
                 hud.querySelector('.ammo').textContent = 
                     player.currentWeapon === 'pistol' ? 
                     (player.pistolAmmo === Infinity ? '∞' : player.pistolAmmo) : '∞';
-                hud.querySelector('.weapon-icon').style.backgroundImage = 
-                    `url(${this.weaponIcons[player.currentWeapon]})`;
+                document.getElementById('score').textContent = this.state.score;
             }
         });
-        document.getElementById('score').textContent = this.state.score;
     }
 
     playSound(soundName, cooldown = 500) {
@@ -935,29 +1003,24 @@ class ZombieShooter {
         }
     }
 
+    playBGM() {
+        if (this.sounds.bgm.paused) {
+            this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки:', e));
+        }
+    }
+
     gameOver() {
         this.gameActive = false;
         this.sounds.bgm.pause();
         cancelAnimationFrame(this.animationFrameId);
         this.playSound('gameOver');
-        
-        if(tg) {
-            tg.sendData(JSON.stringify({
-                action: 'gameOver',
-                score: this.state.score,
-                kills: this.state.kills,
-                userId: this.tgUser?.id
-            }));
-            tg.close();
-        } else {
-            alert(`ИГРА ОКОНЧЕНА! Счёт: ${this.state.score}`);
-            setTimeout(() => location.reload(), 2000);
-        }
+        alert(`ИГРА ОКОНЧЕНА! Счёт: ${this.state.score}`);
+        setTimeout(() => location.reload(), 2000);
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    gameInstance = new ZombieShooter();
+    new ZombieShooter();
 });
 </script>
 </body>
