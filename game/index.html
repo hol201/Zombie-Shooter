@@ -12,6 +12,7 @@
         #mobileControls {
             position: fixed;
             bottom: 0;
+            left: 0;
             width: 100%;
             height: 120px;
             display: none;
@@ -20,11 +21,14 @@
             padding: 10px;
             z-index: 10000;
             background: rgba(0,0,0,0.7);
+            gap: 2vw;
         }
 
         .control-group {
             display: flex;
             gap: 15px;
+            margin-left: 2vw;
+            order: 1;
         }
 
         .mobile-btn {
@@ -42,6 +46,8 @@
             width: 80px;
             height: 80px;
             background: rgba(255,0,0,0.3);
+            margin-right: 3vw;
+            order: 2;
         }
 
         .weapon-selector {
@@ -89,16 +95,17 @@
         }
 
         #player1Hud { 
-            top: 10px;
-            left: 10px;
+            top: 1vh;
+            left: 1vw;
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-direction: row;
         }
 
         #pauseBtn { 
-            top: 10px;
-            right: 180px;
+            top: 1vh;
+            right: 1vw;
             padding: 8px 15px;
         }
 
@@ -187,6 +194,54 @@
             #pauseBtn {
                 right: 5px;
                 padding: 2vw;
+            }
+        }
+
+        @media (max-width: 768px) and (orientation: landscape) {
+            .menu-btn {
+                width: 40vw;
+                font-size: 1.2em;
+                padding: 10px;
+            }
+            
+            #mobileControls {
+                height: 25vh;
+                flex-direction: row;
+                padding: 2vw;
+            }
+            
+            .mobile-btn {
+                width: 12vw;
+                height: 12vw;
+                font-size: 5vw;
+            }
+            
+            .attack-btn {
+                width: 15vw;
+                height: 15vw;
+            }
+            
+            .weapon-selector {
+                flex-direction: row;
+                top: auto;
+                bottom: 10px;
+                left: 10px;
+                right: auto;
+            }
+            
+            .weapon-icon {
+                width: 10vw;
+                height: 10vw;
+            }
+            
+            .hud {
+                font-size: 2vw;
+                padding: 1vw;
+            }
+            
+            #pauseBtn {
+                right: 5px;
+                top: 5px;
             }
         }
     </style>
@@ -390,9 +445,6 @@ class ZombieShooter {
             this.keys[e.code] = true;
             if (['h', 'р'].includes(e.key.toLowerCase())) this.togglePause();
         });
-        window.addEventListener('orientationchange', () => {
-    setTimeout(() => this.handleResize(), 100);
-});
 
         window.addEventListener('keyup', e => this.keys[e.code] = false);
 
@@ -416,26 +468,26 @@ class ZombieShooter {
         });
 
         window.addEventListener('resize', () => this.handleResize());
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.handleResize(), 100);
+        });
     }
 
     handleResize() {
-    const isMobile = window.innerWidth < 768;
-    // Определение ориентации
-    const isLandscape = window.matchMedia("(orientation: landscape)").matches;
-    
-    // Для мобильных устройств в альбомной ориентации
-    if(isMobile && isLandscape) {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.groundLevel = this.canvas.height * 0.90; // Увеличиваем уровень земли
-        document.getElementById('mobileControls').style.height = '100px'; // Меньшая высота контролов
-    } 
-    else {
-        this.canvas.width = isMobile ? window.innerWidth : 1024;
-        this.canvas.height = isMobile ? window.innerHeight : 768;
-        this.groundLevel = this.canvas.height * 0.85;
+        const isMobile = window.innerWidth < 768;
+        const isLandscape = window.matchMedia("(orientation: landscape)").matches;
+        
+        if(isMobile && isLandscape) {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            this.groundLevel = this.canvas.height * 0.90;
+            document.getElementById('mobileControls').style.height = '100px';
+        } else {
+            this.canvas.width = isMobile ? window.innerWidth : 1024;
+            this.canvas.height = isMobile ? window.innerHeight : 768;
+            this.groundLevel = this.canvas.height * 0.85;
+        }
     }
-}
 
     setupMenuInteractions() {
         document.querySelectorAll('.difficulty-section .menu-btn').forEach(btn => {
@@ -590,7 +642,6 @@ class ZombieShooter {
 
             player.isMoving = false;
             
-            // Keyboard controls
             if (player.controls.left.some(code => this.keys[code])) {
                 player.x -= 5 * deltaFactor;
                 player.direction = -1;
@@ -602,7 +653,6 @@ class ZombieShooter {
                 player.isMoving = true;
             }
             
-            // Touch controls
             if (this.touchControls.left) {
                 player.x -= 5 * deltaFactor;
                 player.direction = -1;
@@ -614,31 +664,26 @@ class ZombieShooter {
                 player.isMoving = true;
             }
             
-            // Jump
             if ((this.touchControls.jump || player.controls.jump.some(code => this.keys[code])) && !player.isJumping) {
                 player.velocityY = this.jumpForce;
                 player.isJumping = true;
                 player.jumpStart = Date.now();
             }
 
-            // Apply gravity
             player.y += player.velocityY;
             player.velocityY += this.gravity;
             
-            // Ground collision
             if (player.y >= this.groundLevel) {
                 player.y = this.groundLevel;
                 player.velocityY = 0;
                 player.isJumping = false;
             }
 
-            // Attack
             if ((this.touchControls.attack || player.controls.attack.some(code => this.keys[code])) && 
                 Date.now() - player.lastAttack > player.weapons[player.currentWeapon].cooldown) {
                 this.handleAttack(player);
             }
 
-            // Weapon switching
             player.controls.weapon1.forEach(code => {
                 if (this.keys[code]) player.currentWeapon = 'pistol';
             });
@@ -649,13 +694,11 @@ class ZombieShooter {
                 if (this.keys[code]) player.currentWeapon = 'axe';
             });
 
-            // Update animation frame
             if (Date.now() - player.lastStep > 200) {
                 player.animationFrame = (player.animationFrame + 1) % 4;
                 player.lastStep = Date.now();
             }
 
-            // Check attack animation end
             if (player.isAttacking && Date.now() - player.attackStart > this.attackAnimations[player.currentWeapon].duration) {
                 player.isAttacking = false;
             }
@@ -696,7 +739,6 @@ class ZombieShooter {
 
     handleMeleeAttack(player, weapon) {
         const attackRange = player.currentWeapon === 'knife' ? 60 : 80;
-        const attackAngle = player.direction === 1 ? 0 : 180;
         
         this.state.zombies.forEach(zombie => {
             if (zombie.health <= 0) return;
