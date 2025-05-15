@@ -483,12 +483,12 @@ class ZombieShooter {
         if(isMobile && isLandscape) {
             this.canvas.width = window.innerWidth;
             this.canvas.height = window.innerHeight;
-            this.groundLevel = this.canvas.height * 0.65;
+            this.groundLevel = this.canvas.height * 0.85;
             document.getElementById('mobileControls').style.height = '20vh';
         } else {
             this.canvas.width = isMobile ? window.innerWidth : 1024;
             this.canvas.height = isMobile ? window.innerHeight : 768;
-            this.groundLevel = this.canvas.height * 0.65;
+            this.groundLevel = this.canvas.height * 0.85;
         }
 
         const scaleX = this.canvas.width / oldWidth;
@@ -738,7 +738,7 @@ class ZombieShooter {
             if (player.currentWeapon === 'pistol') {
                 this.state.bullets.push({
                     x: player.x + (player.direction === 1 ? 50 : -50),
-                    y: player.y - 150,
+                    y: player.y - 100,
                     direction: player.direction,
                     speed: 15
                 });
@@ -955,9 +955,8 @@ class ZombieShooter {
     }
 
     createBlood(x, y) {
-        this.state.blood.push({ x, y: y - 130, startTime: Date.now() }); // Изменение здесь
+        this.state.blood.push({ x, y, startTime: Date.now() });
     }
-}
 
     drawPlayers() {
         this.state.players.forEach(player => {
@@ -998,7 +997,7 @@ class ZombieShooter {
                 this.assets.players[player.spriteSet][state],
                 frame * 128, 0, 128, 128,
                 player.direction === 1 ? player.x - 64 : -player.x - 64, 
-                player.y - 180, 
+                player.y - 128, 
                 128, 
                 128
             );
@@ -1040,7 +1039,7 @@ class ZombieShooter {
                     sprite,
                     frame * frameWidth, 0, 
                     frameWidth, 128,
-                    zombie.x - frameWidth/2, zombie.y - 180, 
+                    zombie.x - frameWidth/2, zombie.y - 128, 
                     frameWidth, 128
                 );
             }
