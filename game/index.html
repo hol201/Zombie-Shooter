@@ -205,43 +205,45 @@
             }
             
             #mobileControls {
-                height: 25vh;
+                height: 20vh;
                 flex-direction: row;
-                padding: 2vw;
+                padding: 1vw;
             }
             
             .mobile-btn {
-                width: 12vw;
-                height: 12vw;
-                font-size: 5vw;
+                width: 10vw;
+                height: 10vw;
+                font-size: 4vw;
             }
             
             .attack-btn {
-                width: 15vw;
-                height: 15vw;
+                width: 12vw;
+                height: 12vw;
             }
             
             .weapon-selector {
                 flex-direction: row;
-                top: auto;
-                bottom: 10px;
-                left: 10px;
+                top: 1vh;
+                bottom: auto;
+                left: 1vw;
                 right: auto;
+                gap: 1vw;
             }
             
             .weapon-icon {
-                width: 10vw;
-                height: 10vw;
+                width: 8vw;
+                height: 8vw;
             }
             
             .hud {
-                font-size: 2vw;
-                padding: 1vw;
+                font-size: 1.5vw;
+                padding: 0.5vw;
             }
             
             #pauseBtn {
-                right: 5px;
-                top: 5px;
+                right: 1vw;
+                top: 1vh;
+                padding: 1vw 2vw;
             }
         }
     </style>
@@ -476,18 +478,19 @@ class ZombieShooter {
     handleResize() {
         const isMobile = window.innerWidth < 768;
         const isLandscape = window.matchMedia("(orientation: landscape)").matches;
-        
+        const oldWidth = this.canvas.width;
+        const oldHeight = this.canvas.height;
+
         if(isMobile && isLandscape) {
             this.canvas.width = window.innerWidth;
             this.canvas.height = window.innerHeight;
-            this.groundLevel = this.canvas.height * 0.90;
-            document.getElementById('mobileControls').style.height = '100px';
+            this.groundLevel = this.canvas.height * 0.85;
+            document.getElementById('mobileControls').style.height = '20vh';
         } else {
             this.canvas.width = isMobile ? window.innerWidth : 1024;
             this.canvas.height = isMobile ? window.innerHeight : 768;
             this.groundLevel = this.canvas.height * 0.85;
         }
-    }
 
     setupMenuInteractions() {
         document.querySelectorAll('.difficulty-section .menu-btn').forEach(btn => {
