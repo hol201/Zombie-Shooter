@@ -14,19 +14,19 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 100px;
+            height: 120px;
             display: none;
             justify-content: space-between;
             align-items: center;
-            padding: 8px;
+            padding: 10px;
             z-index: 10000;
             background: rgba(0,0,0,0.7);
-            gap: 1,5vw;
+            gap: 2vw;
         }
 
         .control-group {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             margin-left: 2vw;
             order: 1;
         }
@@ -95,18 +95,17 @@
         }
 
         #player1Hud { 
-            top: 1vh;
-            left: 1vw;
+            top: 10px;
+            left: 10px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            flex-direction: row;
+            gap: 8px;
         }
 
         #pauseBtn { 
-            top: 10vh;
-            right: 10vw;
-            padding: 8px 25px;
+            top: 10px;
+            right: 80px;
+            padding: 8px 15px;
         }
 
         .health-bar {
@@ -130,15 +129,15 @@
             width: 100%; 
             height: 100%; 
             background: url('./static/images/ui/menu_bg.jpg') no-repeat center/cover; 
-            filter: brightness(0.5); 
+            filter: brightness(0.7); 
             z-index: 999; 
         }
 
         #mainMenu { 
             position: fixed; 
-            top: 45%; 
-            left: 45%; 
-            transform: translate(-45%,-45%); 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%,-50%); 
             text-align: center; 
             color: #fff; 
             z-index: 1000; 
@@ -146,7 +145,7 @@
 
         .menu-btn { 
             display: block; 
-            width: 150px; 
+            width: 200px; 
             margin: 10px auto; 
             padding: 15px; 
             font-size: 1.2em; 
@@ -192,8 +191,8 @@
             }
             
             #pauseBtn {
-                right: 15px;
-                padding: 12vw;
+                right: 5px;
+                padding: 2vw;
             }
         }
 
@@ -492,6 +491,20 @@ class ZombieShooter {
             this.groundLevel = this.canvas.height * 0.85;
         }
 
+        const scaleX = this.canvas.width / oldWidth;
+        const scaleY = this.canvas.height / oldHeight;
+
+        this.state.players.forEach(player => {
+            player.x *= scaleX;
+            player.y = this.groundLevel;
+        });
+
+        this.state.zombies.forEach(zombie => {
+            zombie.x *= scaleX;
+            zombie.y = this.groundLevel;
+        });
+    }
+
     setupMenuInteractions() {
         document.querySelectorAll('.difficulty-section .menu-btn').forEach(btn => {
             btn.addEventListener('click', e => {
@@ -770,6 +783,8 @@ class ZombieShooter {
         const deltaFactor = deltaTime / 16.67;
         
         this.state.zombies.forEach(zombie => {
+            if (!zombie.isAlive) return;
+
             if (!zombie.targetPlayer || zombie.targetPlayer.health <= 0) {
                 const alivePlayers = this.state.players.filter(p => p.health > 0);
                 zombie.targetPlayer = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
@@ -802,7 +817,8 @@ class ZombieShooter {
             animationFrame: 0,
             lastFrame: Date.now(),
             isAlive: true,
-            canAttack: true
+            canAttack: true,
+            deathTime: 0
         });
     }
 
@@ -918,19 +934,23 @@ class ZombieShooter {
         const type = Math.random() < 0.5 ? 'medkit' : 'ammo';
         this.state.powerups.push({
             x: Math.random() * (this.canvas.width - 100) + 50,
-            y: 600,
+            y: this.groundLevel - 50,
             type: type,
             duration: 5000
         });
     }
 
     checkZombieDeath(zombie) {
-        if (zombie.health <= 0) {
+        if (zombie.health <= 0 && zombie.isAlive) {
             zombie.isAlive = false;
-            this.state.zombies = this.state.zombies.filter(z => z !== zombie);
+            zombie.deathTime = Date.now();
             this.state.score += 1;
             this.state.kills++;
             this.playSound('zombieDeath');
+            
+            setTimeout(() => {
+                this.state.zombies = this.state.zombies.filter(z => z !== zombie);
+            }, 1000);
         }
     }
 
@@ -988,18 +1008,28 @@ class ZombieShooter {
 
     drawZombies() {
         const frameWidth = 128;
+        const now = Date.now();
         
         this.state.zombies.forEach(zombie => {
             const sprite = zombie.isAlive ? 
                 this.assets.zombies.walk : 
                 this.assets.zombies.death;
             
+            let frame = 0;
+            if (!zombie.isAlive) {
+                const timeSinceDeath = now - zombie.deathTime;
+                frame = Math.floor(timeSinceDeath / 200) % 4;
+                if (timeSinceDeath > 1000) frame = 3;
+            } else {
+                frame = zombie.animationFrame % 4;
+            }
+
             this.ctx.save();
             if (zombie.direction === 1) {
                 this.ctx.scale(-1, 1);
                 this.ctx.drawImage(
                     sprite,
-                    zombie.animationFrame * frameWidth, 0, 
+                    frame * frameWidth, 0, 
                     frameWidth, 128,
                     -zombie.x - frameWidth/2, zombie.y - 128, 
                     frameWidth, 128
@@ -1007,7 +1037,7 @@ class ZombieShooter {
             } else {
                 this.ctx.drawImage(
                     sprite,
-                    zombie.animationFrame * frameWidth, 0, 
+                    frame * frameWidth, 0, 
                     frameWidth, 128,
                     zombie.x - frameWidth/2, zombie.y - 128, 
                     frameWidth, 128
