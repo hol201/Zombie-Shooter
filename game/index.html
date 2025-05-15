@@ -250,6 +250,7 @@ class ZombieShooter {
         this.assets = {};
         this.sounds = {};
         this.keys = {};
+        this.soundCooldowns = {};
         this.touchControls = {
             left: false,
             right: false,
@@ -436,7 +437,6 @@ class ZombieShooter {
                 document.querySelectorAll('.mode-section .menu-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 this.mode = e.target.id === 'singlePlayer' ? 'single' : 'multi';
-                document.getElementById('player2Hud').style.display = this.mode === 'multi' ? 'block' : 'none';
                 this.playBGM();
             });
         });
@@ -573,28 +573,57 @@ class ZombieShooter {
         this.state.players.forEach((player) => {
             if (player.health <= 0) return;
 
-            if(this.touchControls.left) player.x -= 5 * deltaFactor;
-            if(this.touchControls.right) player.x += 5 * deltaFactor;
+            player.isMoving = false;
             
-            if((this.touchControls.jump || player.controls.jump.some(code => this.keys[code])) && !player.isJumping) {
+            // Keyboard controls
+            if (player.controls.left.some(code => this.keys[code])) {
+                player.x -= 5 * deltaFactor;
+                player.direction = -1;
+                player.isMoving = true;
+            }
+            if (player.controls.right.some(code => this.keys[code])) {
+                player.x += 5 * deltaFactor;
+                player.direction = 1;
+                player.isMoving = true;
+            }
+            
+            // Touch controls
+            if (this.touchControls.left) {
+                player.x -= 5 * deltaFactor;
+                player.direction = -1;
+                player.isMoving = true;
+            }
+            if (this.touchControls.right) {
+                player.x += 5 * deltaFactor;
+                player.direction = 1;
+                player.isMoving = true;
+            }
+            
+            // Jump
+            if ((this.touchControls.jump || player.controls.jump.some(code => this.keys[code])) && !player.isJumping) {
                 player.velocityY = this.jumpForce;
                 player.isJumping = true;
                 player.jumpStart = Date.now();
             }
 
+            // Apply gravity
             player.y += player.velocityY;
             player.velocityY += this.gravity;
             
+            // Ground collision
             if (player.y >= this.groundLevel) {
                 player.y = this.groundLevel;
                 player.velocityY = 0;
                 player.isJumping = false;
             }
 
-            if(this.touchControls.attack || player.controls.attack.some(code => this.keys[code])) {
+            // Attack
+            if ((this.touchControls.attack || player.controls.attack.some(code => this.keys[code])) && 
+                Date.now() - player.lastAttack > player.weapons[player.currentWeapon].cooldown) {
                 this.handleAttack(player);
             }
 
+            // Weapon switching
             player.controls.weapon1.forEach(code => {
                 if (this.keys[code]) player.currentWeapon = 'pistol';
             });
@@ -604,6 +633,17 @@ class ZombieShooter {
             player.controls.weapon3.forEach(code => {
                 if (this.keys[code]) player.currentWeapon = 'axe';
             });
+
+            // Update animation frame
+            if (Date.now() - player.lastStep > 200) {
+                player.animationFrame = (player.animationFrame + 1) % 4;
+                player.lastStep = Date.now();
+            }
+
+            // Check attack animation end
+            if (player.isAttacking && Date.now() - player.attackStart > this.attackAnimations[player.currentWeapon].duration) {
+                player.isAttacking = false;
+            }
         });
     }
 
@@ -636,10 +676,6 @@ class ZombieShooter {
             player.lastAttack = Date.now();
             player.isAttacking = true;
             player.attackStart = Date.now();
-            
-            setTimeout(() => {
-                player.isAttacking = false;
-            }, this.attackAnimations[player.currentWeapon].duration);
         }
     }
 
@@ -663,10 +699,7 @@ class ZombieShooter {
                 this.checkZombieDeath(zombie);
                 
                 zombie.x += player.direction * 30;
-                
-                setTimeout(() => {
-                    zombie.canAttack = false;
-                }, 500);
+                zombie.canAttack = false;
             }
         });
         this.playSound('melee');
@@ -698,12 +731,12 @@ class ZombieShooter {
     }
 
     spawnZombie() {
-        const side = this.canvas.width + 100;
+        const side = Math.random() > 0.5 ? this.canvas.width + 100 : -100;
         this.state.zombies.push({
             x: side,
             y: this.groundLevel,
             health: 100,
-            direction: -1,
+            direction: side > this.canvas.width ? -1 : 1,
             speed: this.config.speed,
             targetPlayer: null,
             animationFrame: 0,
@@ -774,7 +807,7 @@ class ZombieShooter {
         
         this.state.zombies.forEach(zombie => {
             this.state.players.forEach((player, pIndex) => {
-                if (player.health <= 0) return;
+                if (player.health <= 0 || !zombie.canAttack) return;
 
                 if (Math.abs(zombie.x - player.x) < collisionDistance && 
                     Math.abs(zombie.y - player.y) < collisionDistance) {
@@ -784,7 +817,6 @@ class ZombieShooter {
                     
                     if (player.health <= 0) {
                         this.state.players = this.state.players.filter(p => p !== player);
-                        document.getElementById(`player${pIndex+1}Hud`).style.display = 'none';
                     }
                 }
             });
@@ -835,9 +867,7 @@ class ZombieShooter {
     checkZombieDeath(zombie) {
         if (zombie.health <= 0) {
             zombie.isAlive = false;
-            setTimeout(() => {
-                this.state.zombies = this.state.zombies.filter(z => z !== zombie);
-            }, 500);
+            this.state.zombies = this.state.zombies.filter(z => z !== zombie);
             this.state.score += 1;
             this.state.kills++;
             this.playSound('zombieDeath');
@@ -982,9 +1012,7 @@ class ZombieShooter {
         if (sound) {
             this.soundCooldowns[soundName] = now + cooldown;
             const clone = sound.cloneNode();
-            clone.volume = soundName.startsWith('player') 
-                ? document.getElementById('screamVolume').value
-                : document.getElementById('sfxVolume').value;
+            clone.volume = soundName.startsWith('player') ? 0.7 : 0.5;
             clone.play().catch(e => console.warn(`Ошибка звука ${soundName}:`, e));
         }
     }
@@ -994,7 +1022,6 @@ class ZombieShooter {
         if (this.isPaused) {
             this.sounds.bgm.pause();
             document.getElementById('pauseBtn').textContent = 'Продолжить';
-            cancelAnimationFrame(this.animationFrameId);
         } else {
             this.sounds.bgm.play();
             document.getElementById('pauseBtn').textContent = 'Пауза';
