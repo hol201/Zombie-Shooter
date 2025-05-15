@@ -97,7 +97,7 @@
         }
 
         #pauseBtn { 
-            top: 10px;
+            top: 80px;
             right: 80px;
             padding: 8px 15px;
         }
@@ -390,6 +390,9 @@ class ZombieShooter {
             this.keys[e.code] = true;
             if (['h', 'р'].includes(e.key.toLowerCase())) this.togglePause();
         });
+        window.addEventListener('orientationchange', () => {
+    setTimeout(() => this.handleResize(), 100);
+});
 
         window.addEventListener('keyup', e => this.keys[e.code] = false);
 
@@ -416,11 +419,23 @@ class ZombieShooter {
     }
 
     handleResize() {
-        const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 768;
+    // Определение ориентации
+    const isLandscape = window.matchMedia("(orientation: landscape)").matches;
+    
+    // Для мобильных устройств в альбомной ориентации
+    if(isMobile && isLandscape) {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.groundLevel = this.canvas.height * 0.90; // Увеличиваем уровень земли
+        document.getElementById('mobileControls').style.height = '100px'; // Меньшая высота контролов
+    } 
+    else {
         this.canvas.width = isMobile ? window.innerWidth : 1024;
         this.canvas.height = isMobile ? window.innerHeight : 768;
         this.groundLevel = this.canvas.height * 0.85;
     }
+}
 
     setupMenuInteractions() {
         document.querySelectorAll('.difficulty-section .menu-btn').forEach(btn => {
