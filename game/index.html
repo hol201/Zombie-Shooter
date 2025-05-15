@@ -103,8 +103,10 @@
         }
 
         #pauseBtn { 
+            position: fixed;
             top: 10px;
-            right: 80px;
+            left: 50%;
+            transform: translateX(-50%);
             padding: 8px 15px;
         }
 
@@ -157,6 +159,46 @@
             transition: all 0.2s; 
         }
 
+        .menu-btn.active {
+            background: #e67e22;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(230, 126, 34, 0.5);
+        }
+
+        #gameOverOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            font-family: Arial, sans-serif;
+        }
+
+        .game-over-text {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px red;
+        }
+
+        .retry-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background: #27ae60;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
         @media (max-width: 768px) {
             .menu-btn {
                 width: 80vw;
@@ -190,9 +232,10 @@
                 padding: 2vw;
             }
             
-            #pauseBtn {
-                right: 5px;
-                padding: 2vw;
+            .character-section .menu-btn {
+                width: 60vw;
+                margin: 5px auto;
+                padding: 10px;
             }
         }
 
@@ -238,12 +281,6 @@
                 font-size: 1.5vw;
                 padding: 0.5vw;
             }
-            
-            #pauseBtn {
-                right: 1vw;
-                top: 1vh;
-                padding: 1vw 2vw;
-            }
         }
     </style>
 </head>
@@ -262,12 +299,12 @@
         <h1>ZOMBIE SHOOTER</h1>
         <div class="difficulty-section">
             <button class="menu-btn" data-difficulty="easy">Легкий</button>
-            <button class="menu-btn" data-difficulty="normal">Средний</button>
+            <button class="menu-btn active" data-difficulty="normal">Средний</button>
             <button class="menu-btn" data-difficulty="hard">Сложный</button>
         </div>
-        <div class="mode-section">
-            <button class="menu-btn active" id="singlePlayer">1 Игрок</button>
-            <button class="menu-btn" id="multiPlayer">2 Игрока</button>
+        <div class="character-section">
+            <button class="menu-btn active" data-character="p1">Персонаж 1</button>
+            <button class="menu-btn" data-character="p2">Персонаж 2</button>
         </div>
         <button class="menu-btn" id="startBtn">Начать игру</button>
     </div>
@@ -290,6 +327,12 @@
         <div class="weapon-icon active" data-weapon="pistol" style="background-image: url('static/images/weapons/pistol.png')"></div>
         <div class="weapon-icon" data-weapon="knife" style="background-image: url('static/images/weapons/knife.png')"></div>
         <div class="weapon-icon" data-weapon="axe" style="background-image: url('static/images/weapons/axe.png')"></div>
+    </div>
+
+    <div id="gameOverOverlay">
+        <div class="game-over-text">КОНЕЦ ИГРЫ</div>
+        <div id="finalStats">Убито зомби: 0</div>
+        <button class="retry-btn">Играть снова</button>
     </div>
 
 <script>
@@ -327,7 +370,7 @@ class ZombieShooter {
         };
 
         this.config = DIFFICULTY.normal;
-        this.mode = 'single';
+        this.selectedCharacter = 'p1';
         this.lastTime = 0;
         this.gameActive = false;
         this.isPaused = false;
@@ -340,12 +383,6 @@ class ZombieShooter {
             pistol: { frames: 4, duration: 350 },
             knife: { frames: 4, duration: 300 },
             axe: { frames: 4, duration: 200 }
-        };
-
-        this.weaponIcons = {
-            pistol: './static/images/weapons/pistol.png',
-            knife: './static/images/weapons/knife.png',
-            axe: './static/images/weapons/axe.png'
         };
 
         this.init();
@@ -511,21 +548,23 @@ class ZombieShooter {
                 document.querySelectorAll('.difficulty-section .menu-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 this.config = DIFFICULTY[e.target.dataset.difficulty];
-                this.playBGM();
             });
         });
 
-        document.querySelectorAll('.mode-section .menu-btn').forEach(btn => {
+        document.querySelectorAll('.character-section .menu-btn').forEach(btn => {
             btn.addEventListener('click', e => {
-                document.querySelectorAll('.mode-section .menu-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.character-section .menu-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
-                this.mode = e.target.id === 'singlePlayer' ? 'single' : 'multi';
-                this.playBGM();
+                this.selectedCharacter = e.target.dataset.character;
             });
         });
 
         document.getElementById('startBtn').addEventListener('click', () => this.startGame());
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
+        document.querySelector('.retry-btn').addEventListener('click', () => {
+            document.getElementById('gameOverOverlay').style.display = 'none';
+            this.startGame();
+        });
     }
 
     startGame() {
@@ -560,7 +599,7 @@ class ZombieShooter {
     }
 
     setupPlayers() {
-        const player1 = this.createPlayer('p1', 100, this.groundLevel, {
+        const player1 = this.createPlayer(this.selectedCharacter, 100, this.groundLevel, {
             left: ['KeyA', 'KeyF'],
             right: ['KeyD', 'KeyE'],
             jump: ['KeyW', 'KeyC'],
@@ -570,19 +609,6 @@ class ZombieShooter {
             weapon3: ['Digit3']
         });
         this.state.players.push(player1);
-
-        if (this.mode === 'multi') {
-            const player2 = this.createPlayer('p2', 924, this.groundLevel, {
-                left: ['ArrowLeft'],
-                right: ['ArrowRight'],
-                jump: ['ArrowUp'],
-                attack: ['Enter'],
-                weapon1: ['Numpad7'],
-                weapon2: ['Numpad8'],
-                weapon3: ['Numpad9']
-            });
-            this.state.players.push(player2);
-        }
     }
 
     createPlayer(spriteSet, x, y, controls) {
@@ -892,7 +918,7 @@ class ZombieShooter {
                     this.playSound(`player${pIndex+1}Hurt`, HURT_COOLDOWN);
                     
                     if (player.health <= 0) {
-                        this.state.players = this.state.players.filter(p => p !== player);
+                        this.gameOver();
                     }
                 }
             });
@@ -1111,10 +1137,10 @@ class ZombieShooter {
         this.isPaused = !this.isPaused;
         if (this.isPaused) {
             this.sounds.bgm.pause();
-            document.getElementById('pauseBtn').textContent = 'Продолжить';
+            document.getElementById('pauseBtn').textContent = '▶️';
         } else {
             this.sounds.bgm.play();
-            document.getElementById('pauseBtn').textContent = 'Пауза';
+            document.getElementById('pauseBtn').textContent = '⏸️';
             this.lastTime = performance.now();
             this.animationFrameId = requestAnimationFrame(t => this.gameLoop(t));
         }
@@ -1131,8 +1157,11 @@ class ZombieShooter {
         this.sounds.bgm.pause();
         cancelAnimationFrame(this.animationFrameId);
         this.playSound('gameOver');
-        alert(`ИГРА ОКОНЧЕНА! Счёт: ${this.state.score}`);
-        setTimeout(() => location.reload(), 2000);
+        
+        const overlay = document.getElementById('gameOverOverlay');
+        overlay.style.display = 'flex';
+        document.getElementById('finalStats').textContent = 
+            `Убито зомби: ${this.state.kills}`;
     }
 }
 
