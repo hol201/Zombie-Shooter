@@ -9,119 +9,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { overflow: hidden; touch-action: none; font-family: Arial, sans-serif; background: #000; }
         
-        #mobileControls {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 120px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            z-index: 10000;
-            background: rgba(0,0,0,0.7);
-            gap: 2vw;
-        }
-
-        .control-group {
-            display: flex;
-            gap: 15px;
-            margin-left: 2vw;
-            order: 1;
-        }
-
-        .mobile-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            border: 2px solid #fff;
-            color: white;
-            font-size: 24px;
-            touch-action: manipulation;
-        }
-
-        .attack-btn {
-            width: 80px;
-            height: 80px;
-            background: rgba(255,0,0,0.3);
-            margin-right: 3vw;
-            order: 2;
-        }
-
-        .weapon-selector {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            z-index: 10000;
-        }
-
-        .weapon-icon {
-            width: 64px;
-            height: 64px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            border: 2px solid #fff;
-            border-radius: 10px;
-            opacity: 0.7;
-            transition: all 0.2s;
-        }
-
-        .weapon-icon.active {
-            opacity: 1;
-            border-color: #3498db;
-            transform: scale(1.1);
-        }
-
         #gameCanvas {
             image-rendering: pixelated;
             width: 100%;
             height: 100%;
-        }
-
-        .hud {
-            position: fixed;
-            color: #fff;
-            background: rgba(0,0,0,0.7);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            z-index: 9999;
-            backdrop-filter: blur(2px);
-        }
-
-        #player1Hud { 
-            top: 10px;
-            left: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        #pauseBtn { 
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 8px 15px;
-        }
-
-        .health-bar {
-            width: 80px;
-            height: 8px;
-            background: #444;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .health-fill {
-            height: 100%;
-            background: #e74c3c;
-            transition: width 0.3s;
         }
 
         #mainMenuBg { 
@@ -142,27 +33,34 @@
             transform: translate(-50%,-50%); 
             text-align: center; 
             color: #fff; 
-            z-index: 1000; 
+            z-index: 1000;
+            width: 100%;
         }
 
         .menu-btn { 
             display: block; 
-            width: 200px; 
-            margin: 10px auto; 
-            padding: 15px; 
-            font-size: 1.2em; 
-            background: #3498db; 
-            border: none; 
-            border-radius: 5px; 
+            width: 150px;
+            margin: 8px auto; 
+            padding: 10px; 
+            font-size: 1em; 
+            background: rgba(52, 152, 219, 0.8); 
+            border: 2px solid #fff;
+            border-radius: 8px; 
             color: white; 
             cursor: pointer; 
             transition: all 0.2s; 
         }
 
         .menu-btn.active {
-            background: #e67e22;
+            background: #ff4444;
             transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(230, 126, 34, 0.5);
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        }
+
+        #mainMenu h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         #gameOverOverlay {
@@ -181,119 +79,21 @@
             font-family: Arial, sans-serif;
         }
 
-        .game-over-text {
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px red;
-        }
-
-        .retry-btn {
-            margin-top: 30px;
-            padding: 15px 30px;
-            font-size: 1.5em;
-            background: #27ae60;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
         @media (max-width: 768px) {
             .menu-btn {
-                width: 80vw;
-                font-size: 1.5em;
-                padding: 20px;
+                width: 120px;
+                font-size: 0.9em;
+                padding: 8px;
             }
             
             #mainMenu h1 {
-                font-size: 2.5em;
-                margin-bottom: 30px;
-            }
-            
-            #mobileControls {
-                display: flex;
-                padding: 5px;
-            }
-            
-            .mobile-btn {
-                width: 15vw;
-                height: 15vw;
-                font-size: 6vw;
-            }
-            
-            .weapon-icon {
-                width: 12vw;
-                height: 12vw;
-            }
-            
-            .hud {
-                font-size: 3vw;
-                padding: 2vw;
-            }
-            
-            .character-section .menu-btn {
-                width: 60vw;
-                margin: 5px auto;
-                padding: 10px;
-            }
-        }
-
-        @media (max-width: 768px) and (orientation: landscape) {
-            .menu-btn {
-                width: 40vw;
-                font-size: 1.2em;
-                padding: 10px;
-            }
-            
-            #mobileControls {
-                height: 20vh;
-                flex-direction: row;
-                padding: 1vw;
-            }
-            
-            .mobile-btn {
-                width: 10vw;
-                height: 10vw;
-                font-size: 4vw;
-            }
-            
-            .attack-btn {
-                width: 12vw;
-                height: 12vw;
-            }
-            
-            .weapon-selector {
-                flex-direction: row;
-                top: 1vh;
-                bottom: auto;
-                left: 1vw;
-                right: auto;
-                gap: 1vw;
-            }
-            
-            .weapon-icon {
-                width: 8vw;
-                height: 8vw;
-            }
-            
-            .hud {
-                font-size: 1.5vw;
-                padding: 0.5vw;
+                font-size: 2em;
+                margin-bottom: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div id="mobileControls">
-        <div class="control-group">
-            <button class="mobile-btn" id="moveLeft">←</button>
-            <button class="mobile-btn" id="jumpBtn">↑</button>
-            <button class="mobile-btn" id="moveRight">→</button>
-        </div>
-        <button class="mobile-btn attack-btn" id="attackBtn">⚡</button>
-    </div>
-
     <div id="mainMenuBg"></div>
     <div id="mainMenu">
         <h1>ZOMBIE SHOOTER</h1>
@@ -306,10 +106,11 @@
             <button class="menu-btn active" data-character="p1">Персонаж 1</button>
             <button class="menu-btn" data-character="p2">Персонаж 2</button>
         </div>
-        <button class="menu-btn" id="startBtn">Начать игру</button>
+        <button class="menu-btn" id="startBtn">Старт</button>
     </div>
 
-    <div id="gameContainer">
+    <!-- Игровые элементы (скрыты в меню) -->
+    <div id="gameContainer" style="display: none;">
         <canvas id="gameCanvas"></canvas>
         <div class="hud" id="player1Hud">
             <div class="health-bar">
@@ -323,10 +124,19 @@
         <button class="hud" id="pauseBtn">⏸️</button>
     </div>
 
-    <div class="weapon-selector">
-        <div class="weapon-icon active" data-weapon="pistol" style="background-image: url('static/images/weapons/pistol.png')"></div>
-        <div class="weapon-icon" data-weapon="knife" style="background-image: url('static/images/weapons/knife.png')"></div>
-        <div class="weapon-icon" data-weapon="axe" style="background-image: url('static/images/weapons/axe.png')"></div>
+    <div class="weapon-selector" style="display: none;">
+        <div class="weapon-icon active" data-weapon="pistol"></div>
+        <div class="weapon-icon" data-weapon="knife"></div>
+        <div class="weapon-icon" data-weapon="axe"></div>
+    </div>
+
+    <div id="mobileControls" style="display: none;">
+        <div class="control-group">
+            <button class="mobile-btn" id="moveLeft">←</button>
+            <button class="mobile-btn" id="jumpBtn">↑</button>
+            <button class="mobile-btn" id="moveRight">→</button>
+        </div>
+        <button class="mobile-btn attack-btn" id="attackBtn">⚡</button>
     </div>
 
     <div id="gameOverOverlay">
