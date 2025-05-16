@@ -58,14 +58,13 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Игровые элементы (скрыты по умолчанию) */
+        /* Игровые элементы */
         #gameContainer,
         .weapon-selector,
         #mobileControls {
             display: none;
         }
 
-        /* Стили игры */
         #gameCanvas {
             image-rendering: pixelated;
             width: 100%;
@@ -338,7 +337,10 @@ const DIFFICULTY = {
 
 class ZombieShooter {
     constructor() {
+        console.log('[Инициализация игры]');
         this.canvas = document.getElementById('gameCanvas');
+        if (!this.canvas) throw new Error("Canvas не найден!");
+        
         this.ctx = this.canvas.getContext('2d');
         this.assets = {};
         this.sounds = {};
@@ -372,7 +374,7 @@ class ZombieShooter {
         this.gravity = 0.7;
         this.jumpForce = -10;
         this.groundLevel = 600;
-        this.gameMusic = null;
+
         this.attackAnimations = {
             pistol: { frames: 4, duration: 350 },
             knife: { frames: 4, duration: 300 },
@@ -383,12 +385,14 @@ class ZombieShooter {
     }
 
     async init() {
+        console.log('[Загрузка ресурсов]');
         try {
             await this.loadAssets();
             await this.loadSounds();
             this.setupEventListeners();
             this.setupMenuInteractions();
             this.handleResize();
+            console.log('[Игра готова к запуску]');
         } catch (error) {
             console.error('Ошибка инициализации:', error);
             alert('Ошибка загрузки ресурсов! Проверьте консоль.');
@@ -467,12 +471,13 @@ class ZombieShooter {
             player2Hurt: loadSound('./static/sounds/player2Hurt.mp3'),
             gameOver: loadSound('./static/sounds/gameOver.wav'),
             bgm: loadSound('./static/sounds/bgm.mp3'),
-            // Добавьте сюда свою игровую музыку:
             gameMusic: loadSound('./static/sounds/game_music.mp3')
         };
+
         this.sounds.bgm.loop = true;
-        this.gameMusic = this.sounds.gameMusic;
-        if (this.gameMusic) this.gameMusic.loop = true;
+        this.sounds.bgm.volume = 0.5;
+        this.sounds.gameMusic.loop = true;
+        this.sounds.gameMusic.volume = 0.7;
     }
 
     setupEventListeners() {
@@ -565,49 +570,44 @@ class ZombieShooter {
     }
 
     startGame() {
-    try {
-        // Останавливаем музыку меню
-        this.sounds.bgm.pause();
-        
-        // Запускаем игровую музыку
-        if (this.gameMusic) {
-            this.gameMusic.currentTime = 0;
-            this.gameMusic.play();
-        } 
+        try {
+            this.sounds.bgm.pause();
+            this.sounds.gameMusic.currentTime = 0;
+            this.sounds.gameMusic.play();
 
-        this.state = {
-            players: [],
-            zombies: [],
-            bullets: [],
-            blood: [],
-            powerups: [],
-            score: 0,
-            nextSpawn: 0,
-            kills: 0,
-            lastPowerupSpawn: 0
-        };
+            this.state = {
+                players: [],
+                zombies: [],
+                bullets: [],
+                blood: [],
+                powerups: [],
+                score: 0,
+                nextSpawn: 0,
+                kills: 0,
+                lastPowerupSpawn: 0
+            };
 
-        this.setupPlayers();
-        this.handleResize();
-        
-        document.getElementById('mainMenu').style.display = 'none';
-        document.getElementById('mainMenuBg').style.display = 'none';
-        document.getElementById('gameContainer').style.display = 'block';
-        document.querySelector('.weapon-selector').style.display = 'flex';
-        
-        if(window.innerWidth < 768) {
-            document.getElementById('mobileControls').style.display = 'flex';
+            this.setupPlayers();
+            this.handleResize();
+            
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('mainMenuBg').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+            document.querySelector('.weapon-selector').style.display = 'flex';
+            
+            if(window.innerWidth < 768) {
+                document.getElementById('mobileControls').style.display = 'flex';
+            }
+
+            this.gameActive = true;
+            this.isPaused = false;
+            this.lastTime = performance.now();
+            this.gameLoop(0);
+        } catch (error) {
+            console.error('Ошибка запуска:', error);
+            this.gameOver();
         }
-
-        this.gameActive = true;
-        this.isPaused = false;
-        this.lastTime = performance.now();
-        this.gameLoop(0);
-    } catch (error) {
-        console.error('Ошибка запуска:', error);
-        this.gameOver();
     }
-}
 
     setupPlayers() {
         const player1 = this.createPlayer(this.selectedCharacter, 100, this.groundLevel, {
@@ -915,30 +915,27 @@ class ZombieShooter {
     }
 
     checkZombiePlayerCollisions() {
-    const collisionDistance = 40;
-    const HURT_COOLDOWN = 500;
-    
-    this.state.zombies.forEach(zombie => {
-        this.state.players.forEach((player, pIndex) => {
-            if (player.health <= 0 || !zombie.canAttack) return;
+        const collisionDistance = 40;
+        const HURT_COOLDOWN = 500;
+        
+        this.state.zombies.forEach(zombie => {
+            this.state.players.forEach((player, pIndex) => {
+                if (player.health <= 0 || !zombie.canAttack) return;
 
-            if (Math.abs(zombie.x - player.x) < collisionDistance && 
-                Math.abs(zombie.y - player.y) < collisionDistance) {
-                
-                player.health -= this.config.dmg;
-                
-                // Вот исправленная строка:
-                const hurtSound = player.spriteSet === 'p1' ? 
-                    'player1Hurt' : 'player2Hurt';
-                this.playSound(hurtSound, HURT_COOLDOWN);
-                
-                if (player.health <= 0) {
-                    this.gameOver();
+                if (Math.abs(zombie.x - player.x) < collisionDistance && 
+                    Math.abs(zombie.y - player.y) < collisionDistance) {
+                    
+                    player.health -= this.config.dmg;
+                    const hurtSound = player.spriteSet === 'p1' ? 'player1Hurt' : 'player2Hurt';
+                    this.playSound(hurtSound, HURT_COOLDOWN);
+                    
+                    if (player.health <= 0) {
+                        this.gameOver();
+                    }
                 }
-            }
+            });
         });
-    });
-}
+    }
 
     checkPowerupCollisions() {
         this.state.powerups.forEach((powerup, pIndex) => {
@@ -1047,6 +1044,7 @@ class ZombieShooter {
         });
     }
 
+       
     drawZombies() {
         const frameWidth = 128;
         const now = Date.now();
