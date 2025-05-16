@@ -9,12 +9,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { overflow: hidden; touch-action: none; font-family: Arial, sans-serif; background: #000; }
         
-        #gameCanvas {
-            image-rendering: pixelated;
-            width: 100%;
-            height: 100%;
-        }
-
+        /* Стили главного меню */
         #mainMenuBg { 
             position: fixed; 
             top: 0; 
@@ -63,6 +58,131 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
+        /* Игровые элементы (скрыты по умолчанию) */
+        #gameContainer,
+        .weapon-selector,
+        #mobileControls {
+            display: none;
+        }
+
+        /* Стили игры */
+        #gameCanvas {
+            image-rendering: pixelated;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hud {
+            position: fixed;
+            color: #fff;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+        }
+
+        #player1Hud { 
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #pauseBtn { 
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 15px;
+        }
+
+        .health-bar {
+            width: 80px;
+            height: 8px;
+            background: #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: #e74c3c;
+            transition: width 0.3s;
+        }
+
+        /* Мобильное управление */
+        #mobileControls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            z-index: 10000;
+            background: rgba(0,0,0,0.7);
+            gap: 2vw;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            margin-left: 2vw;
+            order: 1;
+        }
+
+        .mobile-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            border: 2px solid #fff;
+            color: white;
+            font-size: 24px;
+            touch-action: manipulation;
+        }
+
+        .attack-btn {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,0,0,0.3);
+            margin-right: 3vw;
+            order: 2;
+        }
+
+        /* Выбор оружия */
+        .weapon-selector {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 10000;
+        }
+
+        .weapon-icon {
+            width: 64px;
+            height: 64px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .weapon-icon.active {
+            opacity: 1;
+            border-color: #3498db;
+            transform: scale(1.1);
+        }
+
+        /* Экран смерти */
         #gameOverOverlay {
             position: fixed;
             top: 0;
@@ -79,6 +199,25 @@
             font-family: Arial, sans-serif;
         }
 
+        .game-over-text {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px red;
+        }
+
+        .retry-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background: #27ae60;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        /* Адаптация */
         @media (max-width: 768px) {
             .menu-btn {
                 width: 120px;
@@ -89,6 +228,52 @@
             #mainMenu h1 {
                 font-size: 2em;
                 margin-bottom: 15px;
+            }
+            
+            .mobile-btn {
+                width: 15vw;
+                height: 15vw;
+                font-size: 6vw;
+            }
+            
+            .weapon-icon {
+                width: 12vw;
+                height: 12vw;
+            }
+            
+            .hud {
+                font-size: 3vw;
+                padding: 2vw;
+            }
+        }
+
+        @media (max-width: 768px) and (orientation: landscape) {
+            #mobileControls {
+                height: 20vh;
+                flex-direction: row;
+                padding: 1vw;
+            }
+            
+            .mobile-btn {
+                width: 10vw;
+                height: 10vw;
+                font-size: 4vw;
+            }
+            
+            .attack-btn {
+                width: 12vw;
+                height: 12vw;
+            }
+            
+            .weapon-selector {
+                flex-direction: row;
+                top: 1vh;
+                gap: 1vw;
+            }
+            
+            .weapon-icon {
+                width: 8vw;
+                height: 8vw;
             }
         }
     </style>
@@ -109,8 +294,7 @@
         <button class="menu-btn" id="startBtn">Старт</button>
     </div>
 
-    <!-- Игровые элементы (скрыты в меню) -->
-    <div id="gameContainer" style="display: none;">
+    <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
         <div class="hud" id="player1Hud">
             <div class="health-bar">
@@ -124,13 +308,13 @@
         <button class="hud" id="pauseBtn">⏸️</button>
     </div>
 
-    <div class="weapon-selector" style="display: none;">
-        <div class="weapon-icon active" data-weapon="pistol"></div>
-        <div class="weapon-icon" data-weapon="knife"></div>
-        <div class="weapon-icon" data-weapon="axe"></div>
+    <div class="weapon-selector">
+        <div class="weapon-icon active" data-weapon="pistol" style="background-image: url('static/images/weapons/pistol.png')"></div>
+        <div class="weapon-icon" data-weapon="knife" style="background-image: url('static/images/weapons/knife.png')"></div>
+        <div class="weapon-icon" data-weapon="axe" style="background-image: url('static/images/weapons/axe.png')"></div>
     </div>
 
-    <div id="mobileControls" style="display: none;">
+    <div id="mobileControls">
         <div class="control-group">
             <button class="mobile-btn" id="moveLeft">←</button>
             <button class="mobile-btn" id="jumpBtn">↑</button>
@@ -393,10 +577,16 @@ class ZombieShooter {
 
             this.setupPlayers();
             this.handleResize();
+            
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById('mainMenuBg').style.display = 'none';
             document.getElementById('gameContainer').style.display = 'block';
+            document.querySelector('.weapon-selector').style.display = 'flex';
             
+            if(window.innerWidth < 768) {
+                document.getElementById('mobileControls').style.display = 'flex';
+            }
+
             this.gameActive = true;
             this.isPaused = false;
             this.lastTime = performance.now();
@@ -967,6 +1157,10 @@ class ZombieShooter {
         this.sounds.bgm.pause();
         cancelAnimationFrame(this.animationFrameId);
         this.playSound('gameOver');
+        
+        document.getElementById('gameContainer').style.display = 'none';
+        document.querySelector('.weapon-selector').style.display = 'none';
+        document.getElementById('mobileControls').style.display = 'none';
         
         const overlay = document.getElementById('gameOverOverlay');
         overlay.style.display = 'flex';
