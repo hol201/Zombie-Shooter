@@ -468,13 +468,13 @@ class ZombieShooter {
             gameOver: loadSound('./static/sounds/gameOver.wav'),
             bgm: loadSound('./static/sounds/bgm.mp3'),
             // Добавьте сюда свою игровую музыку:
-            // gameMusic: loadSound('./static/sounds/game_music.mp3')
+            gameMusic: loadSound('./static/sounds/game_music.mp3')
         };
         this.sounds.bgm.loop = true;
         
         // Инициализация игровой музыки
-        // this.gameMusic = this.sounds.gameMusic;
-        // if (this.gameMusic) this.gameMusic.loop = true;
+        this.gameMusic = this.sounds.gameMusic;
+        if (this.gameMusic) this.gameMusic.loop = true;
     }
 
     setupEventListeners() {
@@ -572,9 +572,9 @@ class ZombieShooter {
             this.sounds.bgm.pause();
             
             // Запускаем игровую музыку (раскомментируйте когда добавите файл)
-            // if (this.gameMusic) {
-            //     this.gameMusic.currentTime = 0;
-            //     this.gameMusic.play();
+            if (this.gameMusic) {
+              this.gameMusic.currentTime = 0;
+              this.gameMusic.play();
             // }
             this.state = {
                 players: [],
