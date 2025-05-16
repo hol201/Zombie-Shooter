@@ -372,7 +372,7 @@ class ZombieShooter {
         this.gravity = 0.7;
         this.jumpForce = -10;
         this.groundLevel = 600;
-
+        this.gameMusic = null;
         this.attackAnimations = {
             pistol: { frames: 4, duration: 350 },
             knife: { frames: 4, duration: 300 },
@@ -466,10 +466,15 @@ class ZombieShooter {
             player1Hurt: loadSound('./static/sounds/player1Hurt.mp3'),
             player2Hurt: loadSound('./static/sounds/player2Hurt.mp3'),
             gameOver: loadSound('./static/sounds/gameOver.wav'),
-            bgm: loadSound('./static/sounds/bgm.mp3')
+            bgm: loadSound('./static/sounds/bgm.mp3'),
+            // Добавьте сюда свою игровую музыку:
+            // gameMusic: loadSound('./static/sounds/game_music.mp3')
         };
         this.sounds.bgm.loop = true;
-        this.sounds.bgm.volume = 0.5;
+        
+        // Инициализация игровой музыки
+        // this.gameMusic = this.sounds.gameMusic;
+        // if (this.gameMusic) this.gameMusic.loop = true;
     }
 
     setupEventListeners() {
@@ -563,6 +568,14 @@ class ZombieShooter {
 
     startGame() {
         try {
+                // Останавливаем музыку меню
+            this.sounds.bgm.pause();
+            
+            // Запускаем игровую музыку (раскомментируйте когда добавите файл)
+            // if (this.gameMusic) {
+            //     this.gameMusic.currentTime = 0;
+            //     this.gameMusic.play();
+            // }
             this.state = {
                 players: [],
                 zombies: [],
@@ -904,26 +917,30 @@ class ZombieShooter {
     }
 
     checkZombiePlayerCollisions() {
-        const collisionDistance = 40;
-        const HURT_COOLDOWN = 500;
-        
-        this.state.zombies.forEach(zombie => {
-            this.state.players.forEach((player, pIndex) => {
-                if (player.health <= 0 || !zombie.canAttack) return;
+    const collisionDistance = 40;
+    const HURT_COOLDOWN = 500;
+    
+    this.state.zombies.forEach(zombie => {
+        this.state.players.forEach((player, pIndex) => {
+            if (player.health <= 0 || !zombie.canAttack) return;
 
-                if (Math.abs(zombie.x - player.x) < collisionDistance && 
-                    Math.abs(zombie.y - player.y) < collisionDistance) {
-                    
-                    player.health -= this.config.dmg;
-                    this.playSound(`player${pIndex+1}Hurt`, HURT_COOLDOWN);
-                    
-                    if (player.health <= 0) {
-                        this.gameOver();
-                    }
+            if (Math.abs(zombie.x - player.x) < collisionDistance && 
+                Math.abs(zombie.y - player.y) < collisionDistance) {
+                
+                player.health -= this.config.dmg;
+                
+                // Вот исправленная строка:
+                const hurtSound = player.spriteSet === 'p1' ? 
+                    'player1Hurt' : 'player2Hurt';
+                this.playSound(hurtSound, HURT_COOLDOWN);
+                
+                if (player.health <= 0) {
+                    this.gameOver();
                 }
-            });
+            }
         });
-    }
+    });
+}
 
     checkPowerupCollisions() {
         this.state.powerups.forEach((powerup, pIndex) => {
@@ -1147,12 +1164,18 @@ class ZombieShooter {
     }
 
     playBGM() {
+        // Проигрываем только музыку меню
         if (this.sounds.bgm.paused) {
-            this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки:', e));
+            this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки меню:', e));
         }
     }
 
     gameOver() {
+          // Останавливаем игровую музыку
+        if (this.gameMusic) this.gameMusic.pause();
+        
+        // Возвращаем музыку меню
+        this.playBGM();
         this.gameActive = false;
         this.sounds.bgm.pause();
         cancelAnimationFrame(this.animationFrameId);
