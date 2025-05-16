@@ -59,7 +59,8 @@
 
         #gameContainer,
         .weapon-selector,
-        #mobileControls {
+        #mobileControls,
+        #gameOverOverlay {
             display: none;
         }
 
@@ -80,34 +81,12 @@
             backdrop-filter: blur(2px);
         }
 
-        #player1Hud { 
-            top: 10px;
-            left: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         #pauseBtn { 
             position: fixed;
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
             padding: 8px 15px;
-        }
-
-        .health-bar {
-            width: 80px;
-            height: 8px;
-            background: #444;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .health-fill {
-            height: 100%;
-            background: #e74c3c;
-            transition: width 0.3s;
         }
 
         #mobileControls {
@@ -186,7 +165,6 @@
             height: 100%;
             background: rgba(0,0,0,0.8);
             color: white;
-            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -222,52 +200,6 @@
             #mainMenu h1 {
                 font-size: 2em;
                 margin-bottom: 15px;
-            }
-            
-            .mobile-btn {
-                width: 15vw;
-                height: 15vw;
-                font-size: 6vw;
-            }
-            
-            .weapon-icon {
-                width: 12vw;
-                height: 12vw;
-            }
-            
-            .hud {
-                font-size: 3vw;
-                padding: 2vw;
-            }
-        }
-
-        @media (max-width: 768px) and (orientation: landscape) {
-            #mobileControls {
-                height: 20vh;
-                flex-direction: row;
-                padding: 1vw;
-            }
-            
-            .mobile-btn {
-                width: 10vw;
-                height: 10vw;
-                font-size: 4vw;
-            }
-            
-            .attack-btn {
-                width: 12vw;
-                height: 12vw;
-            }
-            
-            .weapon-selector {
-                flex-direction: row;
-                top: 1vh;
-                gap: 1vw;
-            }
-            
-            .weapon-icon {
-                width: 8vw;
-                height: 8vw;
             }
         }
     </style>
@@ -374,6 +306,7 @@ class ZombieShooter {
             this.setupEventListeners();
             this.setupMenuInteractions();
             this.handleResize();
+            this.playBGM(); // Запуск музыки меню
         } catch (error) {
             console.error('Ошибка инициализации:', error);
             alert('Ошибка загрузки ресурсов!');
@@ -492,8 +425,6 @@ class ZombieShooter {
 
     handleResize() {
         const isMobile = window.innerWidth < 768;
-        const isLandscape = window.matchMedia("(orientation: landscape)").matches;
-        
         this.canvas.width = isMobile ? window.innerWidth : 1024;
         this.canvas.height = isMobile ? window.innerHeight : 768;
         this.groundLevel = this.canvas.height * 0.85;
@@ -537,21 +468,20 @@ class ZombieShooter {
         this.setupPlayers();
         this.handleResize();
         
-        document.getElementById('mainMenu').style.display = 'none';
-        document.getElementById('mainMenuBg').style.display = 'none';
+        // Показать игровые элементы
         document.getElementById('gameContainer').style.display = 'block';
         document.querySelector('.weapon-selector').style.display = 'flex';
+        document.getElementById('mobileControls').style.display = 'flex';
         
-        if(window.innerWidth < 768) {
-            document.getElementById('mobileControls').style.display = 'flex';
-        }
+        // Скрыть меню
+        document.getElementById('mainMenu').style.display = 'none';
+        document.getElementById('mainMenuBg').style.display = 'none';
 
         this.gameActive = true;
         this.isPaused = false;
         this.lastTime = performance.now();
         this.gameLoop(0);
     }
-
     setupPlayers() {
         const player1 = {
             spriteSet: this.selectedCharacter,
@@ -1045,14 +975,29 @@ class ZombieShooter {
         }
     }
 
+    playBGM() {
+        if (this.sounds.bgm.paused) {
+            this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки меню:', e));
+        }
+    }
+
     gameOver() {
         this.gameActive = false;
         cancelAnimationFrame(this.animationFrameId);
         this.sounds.gameMusic.pause();
         this.playSound('gameOver');
         
+        // Показать экран смерти
         document.getElementById('gameOverOverlay').style.display = 'flex';
         document.getElementById('finalStats').textContent = `Убито зомби: ${this.state.kills}`;
+        
+        // Скрыть игровые элементы
+        document.getElementById('gameContainer').style.display = 'none';
+        document.querySelector('.weapon-selector').style.display = 'none';
+        document.getElementById('mobileControls').style.display = 'none';
+        
+        // Вернуть музыку меню
+        this.playBGM();
     }
 
     restartGame() {
@@ -1063,11 +1008,6 @@ class ZombieShooter {
 
 // Запуск игры
 window.addEventListener('load', () => {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('ServiceWorker зарегистрирован'))
-            .catch(err => console.log('Ошибка ServiceWorker', err));
-    }
     new ZombieShooter();
 });
 </script>
