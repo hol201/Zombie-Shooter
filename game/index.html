@@ -567,49 +567,49 @@ class ZombieShooter {
     }
 
     startGame() {
-        try {
-                // Останавливаем музыку меню
-            this.sounds.bgm.pause();
-            
-            // Запускаем игровую музыку (раскомментируйте когда добавите файл)
-            if (this.gameMusic) {
-              this.gameMusic.currentTime = 0;
-              this.gameMusic.play();
-            // }
-            this.state = {
-                players: [],
-                zombies: [],
-                bullets: [],
-                blood: [],
-                powerups: [],
-                score: 0,
-                nextSpawn: 0,
-                kills: 0,
-                lastPowerupSpawn: 0
-            };
+    try {
+        // Останавливаем музыку меню
+        this.sounds.bgm.pause();
+        
+        // Запускаем игровую музыку
+        if (this.gameMusic) {
+            this.gameMusic.currentTime = 0;
+            this.gameMusic.play();
+        } // Была пропущена закрывающая скобка
 
-            this.setupPlayers();
-            this.handleResize();
-            
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById('mainMenuBg').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'block';
-            document.querySelector('.weapon-selector').style.display = 'flex';
-            
-            if(window.innerWidth < 768) {
-                document.getElementById('mobileControls').style.display = 'flex';
-            }
+        this.state = {
+            players: [],
+            zombies: [],
+            bullets: [],
+            blood: [],
+            powerups: [],
+            score: 0,
+            nextSpawn: 0,
+            kills: 0,
+            lastPowerupSpawn: 0
+        };
 
-            this.gameActive = true;
-            this.isPaused = false;
-            this.lastTime = performance.now();
-            this.gameLoop(0);
-            this.playBGM();
-        } catch (error) {
-            console.error('Ошибка запуска:', error);
-            this.gameOver();
+        this.setupPlayers();
+        this.handleResize();
+        
+        document.getElementById('mainMenu').style.display = 'none';
+        document.getElementById('mainMenuBg').style.display = 'none';
+        document.getElementById('gameContainer').style.display = 'block';
+        document.querySelector('.weapon-selector').style.display = 'flex';
+        
+        if(window.innerWidth < 768) {
+            document.getElementById('mobileControls').style.display = 'flex';
         }
+
+        this.gameActive = true;
+        this.isPaused = false;
+        this.lastTime = performance.now();
+        this.gameLoop(0);
+    } catch (error) {
+        console.error('Ошибка запуска:', error);
+        this.gameOver();
     }
+}
 
     setupPlayers() {
         const player1 = this.createPlayer(this.selectedCharacter, 100, this.groundLevel, {
@@ -1171,25 +1171,24 @@ class ZombieShooter {
     }
 
     gameOver() {
-          // Останавливаем игровую музыку
-        if (this.gameMusic) this.gameMusic.pause();
-        
-        // Возвращаем музыку меню
-        this.playBGM();
-        this.gameActive = false;
-        this.sounds.bgm.pause();
-        cancelAnimationFrame(this.animationFrameId);
-        this.playSound('gameOver');
-        
-        document.getElementById('gameContainer').style.display = 'none';
-        document.querySelector('.weapon-selector').style.display = 'none';
-        document.getElementById('mobileControls').style.display = 'none';
-        
-        const overlay = document.getElementById('gameOverOverlay');
-        overlay.style.display = 'flex';
-        document.getElementById('finalStats').textContent = 
-            `Убито зомби: ${this.state.kills}`;
-    }
+    // Останавливаем игровую музыку
+    if (this.gameMusic) this.gameMusic.pause();
+    
+    this.gameActive = false;
+    cancelAnimationFrame(this.animationFrameId);
+    this.playSound('gameOver');
+    
+    document.getElementById('gameContainer').style.display = 'none';
+    document.querySelector('.weapon-selector').style.display = 'none';
+    document.getElementById('mobileControls').style.display = 'none';
+    
+    const overlay = document.getElementById('gameOverOverlay');
+    overlay.style.display = 'flex';
+    document.getElementById('finalStats').textContent = 
+        `Убито зомби: ${this.state.kills}`;
+    
+    // Возвращаем музыку меню
+    this.playBGM();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
