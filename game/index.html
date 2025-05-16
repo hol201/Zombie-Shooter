@@ -471,8 +471,6 @@ class ZombieShooter {
             gameMusic: loadSound('./static/sounds/game_music.mp3')
         };
         this.sounds.bgm.loop = true;
-        
-        // Инициализация игровой музыки
         this.gameMusic = this.sounds.gameMusic;
         if (this.gameMusic) this.gameMusic.loop = true;
     }
@@ -575,7 +573,7 @@ class ZombieShooter {
         if (this.gameMusic) {
             this.gameMusic.currentTime = 0;
             this.gameMusic.play();
-        } // Была пропущена закрывающая скобка
+        } 
 
         this.state = {
             players: [],
@@ -1164,14 +1162,14 @@ class ZombieShooter {
     }
 
     playBGM() {
-        // Проигрываем только музыку меню
+        
         if (this.sounds.bgm.paused) {
             this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки меню:', e));
         }
     }
 
     gameOver() {
-    // Останавливаем игровую музыку
+    
     if (this.gameMusic) this.gameMusic.pause();
     
     this.gameActive = false;
@@ -1187,7 +1185,7 @@ class ZombieShooter {
     document.getElementById('finalStats').textContent = 
         `Убито зомби: ${this.state.kills}`;
     
-    // Возвращаем музыку меню
+    
     this.playBGM();
 }
 
