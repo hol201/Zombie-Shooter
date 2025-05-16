@@ -81,12 +81,34 @@
             backdrop-filter: blur(2px);
         }
 
+        #player1Hud { 
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         #pauseBtn { 
             position: fixed;
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
             padding: 8px 15px;
+        }
+
+        .health-bar {
+            width: 80px;
+            height: 8px;
+            background: #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: #e74c3c;
+            transition: width 0.3s;
         }
 
         #mobileControls {
@@ -165,6 +187,7 @@
             height: 100%;
             background: rgba(0,0,0,0.8);
             color: white;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -306,7 +329,7 @@ class ZombieShooter {
             this.setupEventListeners();
             this.setupMenuInteractions();
             this.handleResize();
-            this.playBGM(); // Запуск музыки меню
+            this.playBGM();
         } catch (error) {
             console.error('Ошибка инициализации:', error);
             alert('Ошибка загрузки ресурсов!');
@@ -468,12 +491,10 @@ class ZombieShooter {
         this.setupPlayers();
         this.handleResize();
         
-        // Показать игровые элементы
         document.getElementById('gameContainer').style.display = 'block';
         document.querySelector('.weapon-selector').style.display = 'flex';
         document.getElementById('mobileControls').style.display = 'flex';
-        
-        // Скрыть меню
+        document.getElementById('player1Hud').style.display = 'flex';
         document.getElementById('mainMenu').style.display = 'none';
         document.getElementById('mainMenuBg').style.display = 'none';
 
@@ -482,6 +503,7 @@ class ZombieShooter {
         this.lastTime = performance.now();
         this.gameLoop(0);
     }
+
     setupPlayers() {
         const player1 = {
             spriteSet: this.selectedCharacter,
@@ -516,7 +538,6 @@ class ZombieShooter {
         const deltaTime = timestamp - this.lastTime;
         this.lastTime = timestamp;
 
-        // Основная игровая логика
         this.updateGameState(deltaTime);
         this.drawGame();
         this.updateHUD();
@@ -542,7 +563,6 @@ class ZombieShooter {
         this.state.players.forEach((player) => {
             if (player.health <= 0) return;
 
-            // Движение
             player.isMoving = false;
             if (this.keys.ArrowLeft || this.touchControls.left) {
                 player.x -= 5 * deltaFactor;
@@ -555,14 +575,12 @@ class ZombieShooter {
                 player.isMoving = true;
             }
 
-            // Прыжок
             if ((this.keys.Space || this.touchControls.jump) && !player.isJumping) {
                 player.velocityY = this.jumpForce;
                 player.isJumping = true;
                 player.jumpStart = Date.now();
             }
 
-            // Гравитация
             player.y += player.velocityY;
             player.velocityY += this.gravity;
             if (player.y >= this.groundLevel) {
@@ -571,18 +589,15 @@ class ZombieShooter {
                 player.isJumping = false;
             }
 
-            // Атака
             if ((this.keys.KeyZ || this.touchControls.attack) && 
                 Date.now() - player.lastAttack > player.weapons[player.currentWeapon].cooldown) {
                 this.handleAttack(player);
             }
 
-            // Смена оружия
             if (this.keys.Digit1) player.currentWeapon = 'pistol';
             if (this.keys.Digit2) player.currentWeapon = 'knife';
             if (this.keys.Digit3) player.currentWeapon = 'axe';
 
-            // Анимация
             if (Date.now() - player.lastStep > 200) {
                 player.animationFrame = (player.animationFrame + 1) % 4;
                 player.lastStep = Date.now();
@@ -946,7 +961,7 @@ class ZombieShooter {
         document.querySelector('.ammo').textContent = 
             player.currentWeapon === 'pistol' ? 
             (player.pistolAmmo === Infinity ? '∞' : player.pistolAmmo) : '∞';
-        document.getElementById('score').textContent = this.state.score;
+        document.getElementById('score').textContent = this.state.kills;
     }
 
     playSound(soundName, cooldown = 500) {
@@ -959,6 +974,12 @@ class ZombieShooter {
             const clone = sound.cloneNode();
             clone.volume = soundName.startsWith('player') ? 0.7 : 0.5;
             clone.play().catch(e => console.warn(`Ошибка звука ${soundName}:`, e));
+        }
+    }
+
+    playBGM() {
+        if (this.sounds.bgm.paused) {
+            this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки меню:', e));
         }
     }
 
@@ -975,28 +996,19 @@ class ZombieShooter {
         }
     }
 
-    playBGM() {
-        if (this.sounds.bgm.paused) {
-            this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки меню:', e));
-        }
-    }
-
     gameOver() {
         this.gameActive = false;
         cancelAnimationFrame(this.animationFrameId);
         this.sounds.gameMusic.pause();
         this.playSound('gameOver');
         
-        // Показать экран смерти
         document.getElementById('gameOverOverlay').style.display = 'flex';
         document.getElementById('finalStats').textContent = `Убито зомби: ${this.state.kills}`;
         
-        // Скрыть игровые элементы
         document.getElementById('gameContainer').style.display = 'none';
         document.querySelector('.weapon-selector').style.display = 'none';
         document.getElementById('mobileControls').style.display = 'none';
         
-        // Вернуть музыку меню
         this.playBGM();
     }
 
@@ -1008,6 +1020,11 @@ class ZombieShooter {
 
 // Запуск игры
 window.addEventListener('load', () => {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('ServiceWorker зарегистрирован'))
+            .catch(err => console.log('Ошибка ServiceWorker', err));
+    }
     new ZombieShooter();
 });
 </script>
