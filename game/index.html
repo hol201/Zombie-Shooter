@@ -277,6 +277,11 @@
         <div id="finalStats">Убито зомби: 0</div>
         <button class="retry-btn">Играть снова</button>
     </div>
+    
+    <div class="menu-section">
+    <h3>Громкость</h3>
+    <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
+    </div>
 
 <script>
 const DIFFICULTY = {
@@ -414,7 +419,7 @@ class ZombieShooter {
         this.sounds.bgm.loop = true;
         this.sounds.bgm.volume = 0.5;
         this.sounds.gameMusic.loop = true;
-        this.sounds.gameMusic.volume = 0.1;
+        this.sounds.gameMusic.volume = 1;
     }
 
     setupEventListeners() {
