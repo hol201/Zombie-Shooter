@@ -60,7 +60,8 @@
         #gameContainer,
         .weapon-selector,
         #mobileControls,
-        #gameOverOverlay {
+        #gameOverOverlay,
+        #pauseBtn {
             display: none;
         }
 
@@ -491,12 +492,13 @@ class ZombieShooter {
         this.setupPlayers();
         this.handleResize();
         
+        document.getElementById('mainMenuBg').style.display = 'none';
+        document.getElementById('mainMenu').style.display = 'none';
         document.getElementById('gameContainer').style.display = 'block';
         document.querySelector('.weapon-selector').style.display = 'flex';
         document.getElementById('mobileControls').style.display = 'flex';
+        document.getElementById('pauseBtn').style.display = 'block';
         document.getElementById('player1Hud').style.display = 'flex';
-        document.getElementById('mainMenu').style.display = 'none';
-        document.getElementById('mainMenuBg').style.display = 'none';
 
         this.gameActive = true;
         this.isPaused = false;
@@ -1002,12 +1004,13 @@ class ZombieShooter {
         this.sounds.gameMusic.pause();
         this.playSound('gameOver');
         
-        document.getElementById('gameOverOverlay').style.display = 'flex';
-        document.getElementById('finalStats').textContent = `Убито зомби: ${this.state.kills}`;
-        
         document.getElementById('gameContainer').style.display = 'none';
         document.querySelector('.weapon-selector').style.display = 'none';
         document.getElementById('mobileControls').style.display = 'none';
+        document.getElementById('pauseBtn').style.display = 'none';
+        
+        document.getElementById('gameOverOverlay').style.display = 'flex';
+        document.getElementById('finalStats').textContent = `Убито зомби: ${this.state.kills}`;
         
         this.playBGM();
     }
