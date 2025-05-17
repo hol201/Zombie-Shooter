@@ -448,6 +448,11 @@ class ZombieShooter {
         document.getElementById('startBtn').addEventListener('click', () => this.startGame());
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
         document.querySelector('.retry-btn').addEventListener('click', () => this.restartGame());
+        document.getElementById('volumeControl').addEventListener('input', (e) => {
+    const volume = parseFloat(e.target.value);
+    this.sounds.gameMusic.volume = volume;
+    this.sounds.bgm.volume = volume;
+});
     }
 
     handleResize() {
