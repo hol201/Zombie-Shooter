@@ -245,6 +245,10 @@
 
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
+        <div class="menu-section">
+            <h3>Громкость</h3>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
+            </div>
         <div class="hud" id="player1Hud">
             <div class="health-bar">
                 <div class="health-fill" style="width: 100%"></div>
@@ -272,10 +276,6 @@
         </div>
         <button class="mobile-btn attack-btn" id="attackBtn">⚡</button>
     </div>
-    <div class="menu-section">
-            <h3>Громкость</h3>
-            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
-            </div>
 
     <div id="gameOverOverlay">
         <div class="game-over-text">КОНЕЦ ИГРЫ</div>
