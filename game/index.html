@@ -83,7 +83,7 @@
 
         #player1Hud {
     position: fixed;
-    bottom: 650px;       /* Отступ от нижнего края */
+    bottom: 950px;       /* Отступ от нижнего края */
     left: 10px;         /* Отступ от левого края */
     z-index: 10000;     /* Гарантируем поверх других элементов */
     background: rgba(0,0,0,0.7);
@@ -1002,17 +1002,18 @@ class ZombieShooter {
     }
 
     togglePause() {
-    this.isPaused = !this.isPaused;
-    if (this.isPaused) {
-        this.sounds.gameMusic.pause();
-        document.getElementById('pauseBtn').textContent = '▶️';
-    } else {
-        this.sounds.gameMusic.play(); // Возобновляем с текущей громкостью
-        document.getElementById('pauseBtn').textContent = '⏸️';
-        this.lastTime = performance.now();
-        this.animationFrameId = requestAnimationFrame(t => this.gameLoop(t));
+        this.isPaused = !this.isPaused;
+        if (this.isPaused) {
+            this.sounds.gameMusic.pause();
+            document.getElementById('pauseBtn').textContent = '▶️';
+        } else {
+            this.sounds.gameMusic.play();
+            document.getElementById('pauseBtn').textContent = '⏸️';
+            this.lastTime = performance.now();
+            this.animationFrameId = requestAnimationFrame(t => this.gameLoop(t));
+        }
     }
-}
+
 
     gameOver() {
         this.gameActive = false;
