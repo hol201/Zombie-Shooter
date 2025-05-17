@@ -249,6 +249,10 @@
             <div class="health-bar">
                 <div class="health-fill" style="width: 100%"></div>
             </div>
+            <div class="menu-section">
+            <h3>Громкость</h3>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
+            </div>
             <div>
                 <div>Патроны: <span class="ammo">∞</span></div>
                 <div>Счёт: <span id="score">0</span></div>
@@ -276,11 +280,6 @@
         <div class="game-over-text">КОНЕЦ ИГРЫ</div>
         <div id="finalStats">Убито зомби: 0</div>
         <button class="retry-btn">Играть снова</button>
-    </div>
-    
-    <div class="menu-section">
-    <h3>Громкость</h3>
-    <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
     </div>
 
 <script>
