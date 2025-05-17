@@ -995,17 +995,17 @@ class ZombieShooter {
     }
 
     togglePause() {
-        this.isPaused = !this.isPaused;
-        if (this.isPaused) {
-            this.sounds.gameMusic.pause();
-            document.getElementById('pauseBtn').textContent = '▶️';
-        } else {
-            this.sounds.gameMusic.play();
-            document.getElementById('pauseBtn').textContent = '⏸️';
-            this.lastTime = performance.now();
-            this.animationFrameId = requestAnimationFrame(t => this.gameLoop(t));
-        }
+    this.isPaused = !this.isPaused;
+    if (this.isPaused) {
+        this.sounds.gameMusic.pause();
+        document.getElementById('pauseBtn').textContent = '▶️';
+    } else {
+        this.sounds.gameMusic.play(); // Возобновляем с текущей громкостью
+        document.getElementById('pauseBtn').textContent = '⏸️';
+        this.lastTime = performance.now();
+        this.animationFrameId = requestAnimationFrame(t => this.gameLoop(t));
     }
+}
 
     gameOver() {
         this.gameActive = false;
