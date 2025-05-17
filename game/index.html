@@ -81,12 +81,19 @@
             backdrop-filter: blur(2px);
         }
 
-        #player1Hud { 
-    bottom: 15px;  /* Изменено с top на bottom */
-    left: 10px;
+        #player1Hud {
+    position: fixed;
+    bottom: 50px;       /* Отступ от нижнего края */
+    left: 10px;         /* Отступ от левого края */
+    z-index: 10000;     /* Гарантируем поверх других элементов */
+    background: rgba(0,0,0,0.7);
+    padding: 10px 15px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    flex-direction: row-reverse; /* Если нужно поменять порядок элементов */
+}
 }
 
         #pauseBtn { 
