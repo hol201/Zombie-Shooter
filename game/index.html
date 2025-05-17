@@ -92,7 +92,7 @@
         #pauseBtn { 
             position: fixed;
             top: 10px;
-            left: 50%;
+            left: 45%;
             transform: translateX(-50%);
             padding: 8px 15px;
         }
@@ -313,7 +313,7 @@ class ZombieShooter {
         this.animationFrameId = null;
         this.gravity = 0.7;
         this.jumpForce = -10;
-        this.groundLevel = 600;
+        this.groundLevel = 650;
         this.attackAnimations = {
             pistol: { frames: 4, duration: 350 },
             knife: { frames: 4, duration: 300 },
@@ -414,7 +414,7 @@ class ZombieShooter {
         this.sounds.bgm.loop = true;
         this.sounds.bgm.volume = 0.5;
         this.sounds.gameMusic.loop = true;
-        this.sounds.gameMusic.volume = 0.7;
+        this.sounds.gameMusic.volume = 0.5;
     }
 
     setupEventListeners() {
