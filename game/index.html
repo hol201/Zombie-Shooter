@@ -244,11 +244,7 @@
     </div>
 
     <div id="gameContainer">
-        <canvas id="gameCanvas"></canvas>
-         <div class="menu-section">
-            <h3>Громкость</h3>
-            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
-            </div>
+        <canvas id="gameCanvas"></canvas> 
     </div>
         <div class="hud" id="player1Hud">
             <div class="health-bar">
@@ -262,7 +258,10 @@
         </div>
         <button class="hud" id="pauseBtn">⏸️</button>
     </div>
-
+    <div class="menu-section">
+            <h3>Громкость</h3>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
+            </div>
     <div class="weapon-selector">
         <div class="weapon-icon active" data-weapon="pistol" style="background-image: url('static/images/weapons/pistol.png')"></div>
         <div class="weapon-icon" data-weapon="knife" style="background-image: url('static/images/weapons/knife.png')"></div>
