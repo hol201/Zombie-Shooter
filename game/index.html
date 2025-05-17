@@ -29,16 +29,14 @@
             color: #fff; 
             z-index: 1000;
             width: 100%;
-            max-width: 400px;
-            padding: 20px;
         }
 
         .menu-btn { 
             display: block; 
-            width: 200px;
-            margin: 10px auto; 
-            padding: 15px; 
-            font-size: 1.1em; 
+            width: 150px;
+            margin: 8px auto; 
+            padding: 10px; 
+            font-size: 1em; 
             background: rgba(52, 152, 219, 0.8); 
             border: 2px solid #fff;
             border-radius: 8px; 
@@ -55,26 +53,15 @@
 
         #mainMenu h1 {
             font-size: 2.5em;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .menu-section {
-            margin: 25px 0;
-        }
-
-        .menu-section h3 {
-            margin-bottom: 15px;
-            font-size: 1.2em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
         #gameContainer,
         .weapon-selector,
         #mobileControls,
-        #gameOverOverlay,
-        #pauseBtn {
-            display: none !important;
+        #gameOverOverlay {
+            display: none;
         }
 
         #gameCanvas {
@@ -228,14 +215,14 @@
 
         @media (max-width: 768px) {
             .menu-btn {
-                width: 180px;
-                font-size: 1em;
-                padding: 12px;
+                width: 120px;
+                font-size: 0.9em;
+                padding: 8px;
             }
             
             #mainMenu h1 {
                 font-size: 2em;
-                margin-bottom: 25px;
+                margin-bottom: 15px;
             }
         }
     </style>
@@ -244,21 +231,16 @@
     <div id="mainMenuBg"></div>
     <div id="mainMenu">
         <h1>ZOMBIE SHOOTER</h1>
-        
-        <div class="menu-section">
-            <h3>Сложность</h3>
+        <div class="difficulty-section">
             <button class="menu-btn" data-difficulty="easy">Легкий</button>
             <button class="menu-btn active" data-difficulty="normal">Средний</button>
             <button class="menu-btn" data-difficulty="hard">Сложный</button>
         </div>
-
-        <div class="menu-section">
-            <h3>Персонаж</h3>
-            <button class="menu-btn active" data-character="p1">Солдат</button>
-            <button class="menu-btn" data-character="p2">Агент</button>
+        <div class="character-section">
+            <button class="menu-btn active" data-character="p1">Персонаж 1</button>
+            <button class="menu-btn" data-character="p2">Персонаж 2</button>
         </div>
-
-        <button class="menu-btn" id="startBtn" style="margin-top: 30px;">Начать игру</button>
+        <button class="menu-btn" id="startBtn">Старт</button>
     </div>
 
     <div id="gameContainer">
@@ -509,13 +491,12 @@ class ZombieShooter {
         this.setupPlayers();
         this.handleResize();
         
-        document.getElementById('mainMenuBg').style.display = 'none';
-        document.getElementById('mainMenu').style.display = 'none';
         document.getElementById('gameContainer').style.display = 'block';
         document.querySelector('.weapon-selector').style.display = 'flex';
         document.getElementById('mobileControls').style.display = 'flex';
-        document.getElementById('pauseBtn').style.display = 'block';
         document.getElementById('player1Hud').style.display = 'flex';
+        document.getElementById('mainMenu').style.display = 'none';
+        document.getElementById('mainMenuBg').style.display = 'none';
 
         this.gameActive = true;
         this.isPaused = false;
@@ -1021,13 +1002,12 @@ class ZombieShooter {
         this.sounds.gameMusic.pause();
         this.playSound('gameOver');
         
+        document.getElementById('gameOverOverlay').style.display = 'flex';
+        document.getElementById('finalStats').textContent = `Убито зомби: ${this.state.kills}`;
+        
         document.getElementById('gameContainer').style.display = 'none';
         document.querySelector('.weapon-selector').style.display = 'none';
         document.getElementById('mobileControls').style.display = 'none';
-        document.getElementById('pauseBtn').style.display = 'none';
-        
-        document.getElementById('gameOverOverlay').style.display = 'flex';
-        document.getElementById('finalStats').textContent = `Убито зомби: ${this.state.kills}`;
         
         this.playBGM();
     }
