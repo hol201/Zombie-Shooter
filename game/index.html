@@ -6,7 +6,7 @@
     <title>Zombie Shooter</title>
     <link rel="manifest" href="./manifest.json">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { overflow: hidden; touch-action: none; font-family: Arial, sans-serif; background: #000; }
 
         #mainMenuBg { 
@@ -51,54 +51,20 @@
             box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
         }
 
-        #mainMenu h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        #gameContainer,
-        .weapon-selector,
-        #gameOverOverlay {
+        #gameContainer { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: none;
         }
 
-      #gameContainer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    transform: translateY(30px);
-    z-index: 9998;
-}
-
-#gameCanvas {
-    image-rendering: pixelated;
-    width: 100%;
-    height: calc(100% - 30px);
-    position: absolute;
-    top: -30px;
-    left: 0;
-    z-index: 9998;
-}
-
-#mobileControls {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    z-index: 10000;
-    background: rgba(0,0,0,0.7);
-    gap: 2vw;
-    display: none;
-    transform: translateY(20px);
-}
+        #gameCanvas {
+            image-rendering: pixelated;
+            width: 100%;
+            height: 100%;
+        }
 
         .hud {
             position: fixed;
@@ -112,25 +78,11 @@
         }
 
         #player1Hud {
-            position: fixed;
-            bottom: 650px;
+            bottom: 120px;
             left: 10px;
-            z-index: 10000;
-            background: rgba(0,0,0,0.7);
-            padding: 10px 15px;
-            border-radius: 8px;
             display: flex;
-            align-items: center;
             gap: 12px;
-        }
-
-        #pauseBtn { 
-            position: fixed;
-            bottom: 550px;
-            right: 150px;
-            z-index: 10000;
-            padding: 10px 15px;
-            display: none;
+            align-items: center;
         }
 
         .health-bar {
@@ -146,13 +98,19 @@
             background: #e74c3c;
             transition: width 0.3s;
         }
-            
-        .control-group {
-            margin-bottom: 35px;
-            display: flex;
-            gap: 15px;
-            margin-left: 2vw;
-            order: 1;
+
+        #mobileControls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            z-index: 10000;
+            background: rgba(0,0,0,0.7);
         }
 
         .mobile-btn {
@@ -170,37 +128,7 @@
             width: 90px;
             height: 90px;
             background: rgba(255,0,0,0.3);
-            margin-bottom: 35px;
-            margin-right: 3vw;
-            order: 2;
-        }
-
-        .weapon-selector {
-            position: fixed;
-            top: 150px;
-            right: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            z-index: 10000;
-            display: none;
-        }
-
-        .weapon-icon {
-            width: 64px;
-            height: 64px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            border: 2px solid #fff;
-            border-radius: 10px;
-            opacity: 0.7;
-            transition: all 0.2s;
-        }
-
-        .weapon-icon.active {
-            opacity: 1;
-            border-color: #3498db;
-            transform: scale(1.1);
+            margin-right: 20px;
         }
 
         #gameOverOverlay {
@@ -210,44 +138,12 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.8);
-            color: white;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 10000;
-            font-family: Arial, sans-serif;
-        }
-
-        .game-over-text {
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px red;
-        }
-
-        .retry-btn {
-            margin-top: 30px;
-            padding: 15px 30px;
-            font-size: 1.5em;
-            background: #27ae60;
-            border: none;
-            border-radius: 8px;
             color: white;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        @media (max-width: 768px) {
-            .menu-btn {
-                width: 120px;
-                font-size: 0.9em;
-                padding: 8px;
-            }
-            
-            #mainMenu h1 {
-                font-size: 2em;
-                margin-bottom: 15px;
-            }
+            z-index: 10001;
         }
     </style>
 </head>
@@ -266,9 +162,9 @@
         </div>
         <button class="menu-btn" id="startBtn">Старт</button>
     </div>
-    
+
     <div id="gameContainer">
-        <canvas id="gameCanvas"></canvas> 
+        <canvas id="gameCanvas"></canvas>
         <div class="hud" id="player1Hud">
             <div class="health-bar">
                 <div class="health-fill" style="width: 100%"></div>
@@ -279,12 +175,6 @@
             </div>
         </div>
         <button class="hud" id="pauseBtn">⏸️</button>
-    </div>
-   
-    <div class="weapon-selector">
-        <div class="weapon-icon active" data-weapon="pistol" style="background-image: url('static/images/weapons/pistol.png')"></div>
-        <div class="weapon-icon" data-weapon="knife" style="background-image: url('static/images/weapons/knife.png')"></div>
-        <div class="weapon-icon" data-weapon="axe" style="background-image: url('static/images/weapons/axe.png')"></div>
     </div>
 
     <div id="mobileControls">
@@ -316,9 +206,8 @@ class ZombieShooter {
         this.assets = {};
         this.sounds = {};
         this.keys = {};
-        this.soundCooldowns = {};
         this.touchControls = { left: false, right: false, jump: false, attack: false };
-        this.state = {
+        this.gameState = {
             players: [],
             zombies: [],
             bullets: [],
@@ -368,52 +257,46 @@ class ZombieShooter {
             img.src = path;
         });
 
-        this.assets = {
-            players: {
-                p1: await this.loadPlayerSprites('p1'),
-                p2: await this.loadPlayerSprites('p2')
+        // Загрузка персонажей
+        this.assets.players = {
+            p1: {
+                idle: await loadImage('./static/images/players/p1/idle.png'),
+                walk: await loadImage('./static/images/players/p1/walk.png'),
+                pistol: await loadImage('./static/images/players/p1/pistol.png'),
+                knife: await loadImage('./static/images/players/p1/knife.png'),
+                axe: await loadImage('./static/images/players/p1/axe.png'),
+                jump: await loadImage('./static/images/players/p1/jump.png')
             },
-            weapons: {
-                pistol: await loadImage('./static/images/weapons/pistol.png'),
-                knife: await loadImage('./static/images/weapons/knife.png'),
-                axe: await loadImage('./static/images/weapons/axe.png')
-            },
-            zombies: {
-                walk: await loadImage('./static/images/zombies/walk.png'),
-                death: await loadImage('./static/images/zombies/death.png')
-            },
-            effects: {
-                blood: await loadImage('./static/images/effects/blood.png'),
-                bullet: await loadImage('./static/images/effects/bullet.png')
-            },
-            powerups: {
-                medkit: await loadImage('./static/images/powerups/medkit.png'),
-                ammo: await loadImage('./static/images/powerups/ammo.png')
-            },
-            bg: await loadImage('./static/images/ui/background.jpg')
+            p2: {
+                idle: await loadImage('./static/images/players/p2/idle.png'),
+                walk: await loadImage('./static/images/players/p2/walk.png'),
+                pistol: await loadImage('./static/images/players/p2/pistol.png'),
+                knife: await loadImage('./static/images/players/p2/knife.png'),
+                axe: await loadImage('./static/images/players/p2/axe.png'),
+                jump: await loadImage('./static/images/players/p2/jump.png')
+            }
         };
-    }
 
-    async loadPlayerSprites(player) {
-        const paths = {
-            idle: `./static/images/players/${player}/idle.png`,
-            walk: `./static/images/players/${player}/walk.png`,
-            pistol: `./static/images/players/${player}/pistol.png`,
-            knife: `./static/images/players/${player}/knife.png`,
-            axe: `./static/images/players/${player}/axe.png`,
-            jump: `./static/images/players/${player}/jump.png`
+        // Загрузка зомби
+        this.assets.zombies = {
+            walk: await loadImage('./static/images/zombies/walk.png'),
+            death: await loadImage('./static/images/zombies/death.png')
         };
-        
-        const sprites = {};
-        for (const [type, path] of Object.entries(paths)) {
-            sprites[type] = await new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = () => reject(`Ошибка загрузки: ${path}`);
-                img.src = path;
-            });
-        }
-        return sprites;
+
+        // Загрузка эффектов
+        this.assets.effects = {
+            blood: await loadImage('./static/images/effects/blood.png'),
+            bullet: await loadImage('./static/images/effects/bullet.png')
+        };
+
+        // Загрузка бонусов
+        this.assets.powerups = {
+            medkit: await loadImage('./static/images/powerups/medkit.png'),
+            ammo: await loadImage('./static/images/powerups/ammo.png')
+        };
+
+        // Загрузка фона
+        this.assets.bg = await loadImage('./static/images/ui/background.jpg');
     }
 
     async loadSounds() {
@@ -457,26 +340,9 @@ class ZombieShooter {
         handleTouch(document.getElementById('jumpBtn'), 'jump');
         handleTouch(document.getElementById('attackBtn'), 'attack');
 
-        document.querySelectorAll('.weapon-icon').forEach(icon => {
-            icon.addEventListener('touchstart', (e) => {
-                document.querySelectorAll('.weapon-icon').forEach(i => i.classList.remove('active'));
-                e.target.classList.add('active');
-                this.state.players[0].currentWeapon = e.target.dataset.weapon;
-            });
-        });
-        
-        document.getElementById('audioStarter').addEventListener('click', () => {
-    this.sounds.gameMusic.play();
-    this.sounds.gameMusic.muted = false;
-});
         document.getElementById('startBtn').addEventListener('click', () => this.startGame());
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
         document.querySelector('.retry-btn').addEventListener('click', () => this.restartGame());
-        document.getElementById('volumeControl').addEventListener('input', (e) => {
-            const volume = parseFloat(e.target.value);
-            this.sounds.gameMusic.volume = volume;
-            this.sounds.bgm.volume = volume;
-        });
     }
 
     handleResize() {
@@ -509,7 +375,7 @@ class ZombieShooter {
         this.sounds.gameMusic.currentTime = 0;
         this.sounds.gameMusic.play();
 
-        this.state = {
+        this.gameState = {
             players: [],
             zombies: [],
             bullets: [],
@@ -525,7 +391,6 @@ class ZombieShooter {
         this.handleResize();
         
         document.getElementById('gameContainer').style.display = 'block';
-        document.querySelector('.weapon-selector').style.display = 'flex';
         document.getElementById('mobileControls').style.display = 'flex';
         document.getElementById('player1Hud').style.display = 'flex';
         document.getElementById('pauseBtn').style.display = 'block';
@@ -562,7 +427,7 @@ class ZombieShooter {
             attackStart: 0,
             jumpStart: 0
         };
-        this.state.players.push(player1);
+        this.gameState.players.push(player1);
     }
 
     gameLoop(timestamp) {
@@ -578,9 +443,9 @@ class ZombieShooter {
     }
 
     updateGameState(deltaTime) {
-        if (Date.now() > this.state.nextSpawn) {
+        if (Date.now() > this.gameState.nextSpawn) {
             this.spawnZombie();
-            this.state.nextSpawn = Date.now() + this.config.spawn;
+            this.gameState.nextSpawn = Date.now() + this.config.spawn;
         }
 
         this.updatePlayers(deltaTime);
@@ -594,7 +459,7 @@ class ZombieShooter {
     updatePlayers(deltaTime) {
         const deltaFactor = deltaTime / 16.67;
 
-        this.state.players.forEach((player) => {
+        this.gameState.players.forEach((player) => {
             if (player.health <= 0) return;
 
             player.isMoving = false;
@@ -652,7 +517,7 @@ class ZombieShooter {
                 return;
             }
             player.pistolAmmo--;
-            this.state.bullets.push({
+            this.gameState.bullets.push({
                 x: player.x + (player.direction === 1 ? 50 : -50),
                 y: player.y - 100,
                 direction: player.direction,
@@ -672,7 +537,7 @@ class ZombieShooter {
     handleMeleeAttack(player, weapon) {
         const attackRange = player.currentWeapon === 'knife' ? 60 : 80;
         
-        this.state.zombies.forEach(zombie => {
+        this.gameState.zombies.forEach(zombie => {
             if (zombie.health <= 0) return;
             
             const dx = zombie.x - player.x;
@@ -695,11 +560,11 @@ class ZombieShooter {
     updateZombies(deltaTime) {
         const deltaFactor = deltaTime / 16.67;
         
-        this.state.zombies.forEach(zombie => {
+        this.gameState.zombies.forEach(zombie => {
             if (!zombie.isAlive) return;
 
             if (!zombie.targetPlayer || zombie.targetPlayer.health <= 0) {
-                zombie.targetPlayer = this.state.players.find(p => p.health > 0);
+                zombie.targetPlayer = this.gameState.players.find(p => p.health > 0);
             }
 
             if (zombie.targetPlayer) {
@@ -718,7 +583,7 @@ class ZombieShooter {
 
     spawnZombie() {
         const side = Math.random() > 0.5 ? this.canvas.width + 100 : -100;
-        this.state.zombies.push({
+        this.gameState.zombies.push({
             x: side,
             y: this.groundLevel,
             health: 100,
@@ -735,7 +600,7 @@ class ZombieShooter {
 
     updateBullets(deltaTime) {
         const deltaFactor = deltaTime / 16.67;
-        this.state.bullets = this.state.bullets.filter(bullet => {
+        this.gameState.bullets = this.gameState.bullets.filter(bullet => {
             bullet.x += bullet.direction * bullet.speed * deltaFactor;
             return bullet.x > 0 && bullet.x < this.canvas.width;
         });
@@ -748,8 +613,8 @@ class ZombieShooter {
     }
 
     checkBulletCollisions() {
-        this.state.bullets.forEach((bullet, bIndex) => {
-            this.state.zombies.forEach((zombie, zIndex) => {
+        this.gameState.bullets.forEach((bullet, bIndex) => {
+            this.gameState.zombies.forEach((zombie, zIndex) => {
                 const zombieBox = {
                     x: zombie.x - 40,
                     y: zombie.y - 120,
@@ -766,7 +631,7 @@ class ZombieShooter {
 
                 if (this.checkCollision(zombieBox, bulletBox)) {
                     zombie.health -= 50;
-                    this.state.bullets.splice(bIndex, 1);
+                    this.gameState.bullets.splice(bIndex, 1);
                     this.createBlood(zombie.x, zombie.y - 80);
                     this.checkZombieDeath(zombie);
                 }
@@ -785,8 +650,8 @@ class ZombieShooter {
         const collisionDistance = 40;
         const HURT_COOLDOWN = 500;
         
-        this.state.zombies.forEach(zombie => {
-            this.state.players.forEach(player => {
+        this.gameState.zombies.forEach(zombie => {
+            this.gameState.players.forEach(player => {
                 if (player.health <= 0 || !zombie.canAttack) return;
 
                 if (Math.abs(zombie.x - player.x) < collisionDistance && 
@@ -805,14 +670,14 @@ class ZombieShooter {
     }
 
     checkPowerupCollisions() {
-        this.state.powerups.forEach((powerup, pIndex) => {
-            this.state.players.forEach(player => {
+        this.gameState.powerups.forEach((powerup, pIndex) => {
+            this.gameState.players.forEach(player => {
                 if (player.health <= 0) return;
 
                 if (Math.abs(powerup.x - player.x) < 40 && 
                     Math.abs(powerup.y - player.y) < 40) {
                     this.applyPowerup(player, powerup);
-                    this.state.powerups.splice(pIndex, 1);
+                    this.gameState.powerups.splice(pIndex, 1);
                     this.playSound('pickup');
                 }
             });
@@ -828,16 +693,16 @@ class ZombieShooter {
     }
 
     checkPowerupSpawn(deltaTime) {
-        if (Date.now() - this.state.lastPowerupSpawn > 10000 && 
+        if (Date.now() - this.gameState.lastPowerupSpawn > 10000 && 
             Math.random() < this.config.powerupChance) {
             this.spawnPowerup();
-            this.state.lastPowerupSpawn = Date.now();
+            this.gameState.lastPowerupSpawn = Date.now();
         }
     }
 
     spawnPowerup() {
         const type = Math.random() < 0.5 ? 'medkit' : 'ammo';
-        this.state.powerups.push({
+        this.gameState.powerups.push({
             x: Math.random() * (this.canvas.width - 100) + 50,
             y: this.groundLevel - 50,
             type: type,
@@ -849,22 +714,22 @@ class ZombieShooter {
         if (zombie.health <= 0 && zombie.isAlive) {
             zombie.isAlive = false;
             zombie.deathTime = Date.now();
-            this.state.score += 1;
-            this.state.kills++;
+            this.gameState.score += 1;
+            this.gameState.kills++;
             this.playSound('zombieDeath');
             setTimeout(() => {
-                this.state.zombies = this.state.zombies.filter(z => z !== zombie);
+                this.gameState.zombies = this.gameState.zombies.filter(z => z !== zombie);
             }, 1000);
         }
     }
 
     createBlood(x, y) {
-        this.state.blood.push({ x, y, startTime: Date.now() });
+        this.gameState.blood.push({ x, y, startTime: Date.now() });
     }
 
     cleanupObjects() {
-        this.state.blood = this.state.blood.filter(blood => Date.now() - blood.startTime < 1000);
-        this.state.powerups = this.state.powerups.filter(p => p.duration > 0);
+        this.gameState.blood = this.gameState.blood.filter(blood => Date.now() - blood.startTime < 1000);
+        this.gameState.powerups = this.gameState.powerups.filter(p => p.duration > 0);
     }
 
     drawGame() {
@@ -878,7 +743,7 @@ class ZombieShooter {
     }
 
     drawPlayers() {
-        this.state.players.forEach(player => {
+        this.gameState.players.forEach(player => {
             if (player.health <= 0) return;
 
             let state = 'idle';
@@ -922,7 +787,7 @@ class ZombieShooter {
     }
 
     drawZombies() {
-        this.state.zombies.forEach(zombie => {
+        this.gameState.zombies.forEach(zombie => {
             const sprite = zombie.isAlive ? this.assets.zombies.walk : this.assets.zombies.death;
             const frameWidth = 128;
             let frame = zombie.animationFrame % 4;
@@ -954,7 +819,7 @@ class ZombieShooter {
     }
 
     drawBullets() {
-        this.state.bullets.forEach(bullet => {
+        this.gameState.bullets.forEach(bullet => {
             this.ctx.drawImage(
                 this.assets.effects.bullet,
                 bullet.x - 4,
@@ -966,7 +831,7 @@ class ZombieShooter {
 
     drawBlood() {
         const now = Date.now();
-        this.state.blood.forEach(blood => {
+        this.gameState.blood.forEach(blood => {
             const frame = Math.floor((now - blood.startTime) / 50) % 4;
             this.ctx.drawImage(
                 this.assets.effects.blood,
@@ -977,7 +842,7 @@ class ZombieShooter {
     }
 
     drawPowerups() {
-        this.state.powerups.forEach(powerup => {
+        this.gameState.powerups.forEach(powerup => {
             const yOffset = Math.sin(Date.now()/300) * 10;
             this.ctx.drawImage(
                 this.assets.powerups[powerup.type],
@@ -988,14 +853,14 @@ class ZombieShooter {
     }
 
     updateHUD() {
-        const player = this.state.players[0];
+        const player = this.gameState.players[0];
         if (!player) return;
         
         document.querySelector('.health-fill').style.width = `${Math.max(0, player.health)}%`;
         document.querySelector('.ammo').textContent = 
             player.currentWeapon === 'pistol' ? 
             (player.pistolAmmo === Infinity ? '∞' : player.pistolAmmo) : '∞';
-        document.getElementById('score').textContent = this.state.kills;
+        document.getElementById('score').textContent = this.gameState.kills;
     }
 
     playSound(soundName, cooldown = 500) {
@@ -1039,10 +904,9 @@ class ZombieShooter {
         this.playSound('gameOver');
         
         document.getElementById('gameOverOverlay').style.display = 'flex';
-        document.getElementById('finalStats').textContent = `Убито зомби: ${this.state.kills}`;
+        document.getElementById('finalStats').textContent = `Убито зомби: ${this.gameState.kills}`;
         
         document.getElementById('gameContainer').style.display = 'none';
-        document.querySelector('.weapon-selector').style.display = 'none';
         document.getElementById('mobileControls').style.display = 'none';
         document.getElementById('pauseBtn').style.display = 'none';
         
