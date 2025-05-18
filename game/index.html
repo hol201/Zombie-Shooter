@@ -266,16 +266,17 @@
         </div>
         <button class="menu-btn" id="startBtn">Старт</button>
     </div>
-    </div>
+    
+    <div id="gameContainer">
+       
+        <canvas id="gameCanvas"></canvas> 
+        </div>
     <button id="audioStarter" class="menu-btn">▶️ Включить звук</button>
     </div>
-    <div id="gameContainer">
-        <div class="menu-section">
+     <div class="menu-section">
             <h3>Громкость</h3>
             <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
         </div>
-        <canvas id="gameCanvas"></canvas> 
-        
         <div class="hud" id="player1Hud">
             <div class="health-bar">
                 <div class="health-fill" style="width: 100%"></div>
