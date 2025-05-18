@@ -97,7 +97,7 @@
     background: rgba(0,0,0,0.7);
     gap: 2vw;
     display: none;
-    transform: translateY(30px);
+    transform: translateY(20px);
 }
 
         .hud {
@@ -113,7 +113,7 @@
 
         #player1Hud {
             position: fixed;
-            bottom: 650px;
+            bottom: 750px;
             left: 10px;
             z-index: 10000;
             background: rgba(0,0,0,0.7);
@@ -127,7 +127,7 @@
         #pauseBtn { 
             position: fixed;
             bottom: 650px;
-            right: 150px;
+            right: 250px;
             z-index: 10000;
             padding: 10px 15px;
             display: none;
@@ -166,7 +166,7 @@
         }
 
         .attack-btn {
-            width: 230px;
+            width: 90px;
             height: 90px;
             background: rgba(255,0,0,0.3);
             margin-right: 3vw;
@@ -265,11 +265,7 @@
         <button class="menu-btn" id="startBtn">Старт</button>
     </div>
 
-    <div id="gameContainer">
-        <div class="menu-section">
-            <h3>Громкость</h3>
-            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
-        </div>
+    <div id="gameContainer"> 
         <canvas id="gameCanvas"></canvas> 
         
         <div class="hud" id="player1Hud">
