@@ -8,7 +8,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { overflow: hidden; touch-action: none; font-family: Arial, sans-serif; background: #000; }
-        
+
         #mainMenuBg { 
             position: fixed; 
             top: 0; 
@@ -266,7 +266,9 @@
         </div>
         <button class="menu-btn" id="startBtn">Старт</button>
     </div>
-
+    </div>
+    <button id="audioStarter" class="menu-btn">▶️ Включить звук</button>
+    </div>
     <div id="gameContainer">
         <div class="menu-section">
             <h3>Громкость</h3>
@@ -469,7 +471,11 @@ class ZombieShooter {
                 this.state.players[0].currentWeapon = e.target.dataset.weapon;
             });
         });
-
+        
+        document.getElementById('audioStarter').addEventListener('click', () => {
+    this.sounds.gameMusic.play();
+    this.sounds.gameMusic.muted = false;
+});
         document.getElementById('startBtn').addEventListener('click', () => this.startGame());
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
         document.querySelector('.retry-btn').addEventListener('click', () => this.restartGame());
