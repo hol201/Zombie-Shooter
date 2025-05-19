@@ -364,7 +364,11 @@ class ZombieShooter {
         this.init();
         this.audioEnabled = false;
     }
-
+        enableAudio() {
+        this.audioEnabled = true;
+        document.getElementById('audioEnableBtn').textContent = '🔊 Звук включен';
+        this.playBGM();
+    }
     async init() {
         try {
             await this.loadAssets();
@@ -478,55 +482,51 @@ class ZombieShooter {
 } 
 
     setupEventListeners() {
-        window.addEventListener('keydown', e => this.keys[e.code] = true);
-        window.addEventListener('keyup', e => this.keys[e.code] = false);
-        window.addEventListener('resize', () => this.handleResize());
+    window.addEventListener('keydown', e => this.keys[e.code] = true);
+    window.addEventListener('keyup', e => this.keys[e.code] = false);
+    window.addEventListener('resize', () => this.handleResize());
 
-        const handleTouch = (btn, action) => {
-            btn.addEventListener('touchstart', () => this.touchControls[action] = true);
-            btn.addEventListener('touchend', () => this.touchControls[action] = false);
-            btn.addEventListener('touchcancel', () => this.touchControls[action] = false);
-        };
+    const handleTouch = (btn, action) => {
+        btn.addEventListener('touchstart', () => this.touchControls[action] = true);
+        btn.addEventListener('touchend', () => this.touchControls[action] = false);
+        btn.addEventListener('touchcancel', () => this.touchControls[action] = false);
+    };
 
-        handleTouch(document.getElementById('moveLeft'), 'left');
-        handleTouch(document.getElementById('moveRight'), 'right');
-        handleTouch(document.getElementById('jumpBtn'), 'jump');
-        handleTouch(document.getElementById('attackBtn'), 'attack');
+    handleTouch(document.getElementById('moveLeft'), 'left');
+    handleTouch(document.getElementById('moveRight'), 'right');
+    handleTouch(document.getElementById('jumpBtn'), 'jump');
+    handleTouch(document.getElementById('attackBtn'), 'attack');
 
-        document.querySelectorAll('.weapon-icon').forEach(icon => {
-            icon.addEventListener('touchstart', (e) => {
-                document.querySelectorAll('.weapon-icon').forEach(i => i.classList.remove('active'));
-                e.target.classList.add('active');
-                this.state.players[0].currentWeapon = e.target.dataset.weapon;
-            });
+    document.querySelectorAll('.weapon-icon').forEach(icon => {
+        icon.addEventListener('touchstart', (e) => {
+            document.querySelectorAll('.weapon-icon').forEach(i => i.classList.remove('active'));
+            e.target.classList.add('active');
+            this.state.players[0].currentWeapon = e.target.dataset.weapon;
         });
-                const audioBtn = document.getElementById('audioEnableBtn');
-                if (audioBtn) {
-                    audioBtn.addEventListener('click', () => {
-                        this.enableAudio();
-                    }); 
-                }
-        
-    enableAudio() {
-        this.audioEnabled = true;
-        document.getElementById('audioEnableBtn').textContent = '🔊 Звук включен';
-        this.playBGM();
-    }
-        
-        const startBtn = document.getElementById('startBtn');
-if (startBtn) {
-    startBtn.addEventListener('click', () => this.startGame());
-};
-        const pauseBtn = document.getElementById('pauseBtn');
-if (pauseBtn) {
-    pauseBtn.addEventListener('click', () => this.togglePause());
-}
+    });
 
-const retryBtn = document.querySelector('.retry-btn');
-if (retryBtn) {
-    retryBtn.addEventListener('click', () => this.restartGame());
-}
-}
+    const audioBtn = document.getElementById('audioEnableBtn');
+    if (audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            this.enableAudio();
+        });
+    }
+
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) {
+        startBtn.addEventListener('click', () => this.startGame());
+    }
+
+    const pauseBtn = document.getElementById('pauseBtn');
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', () => this.togglePause());
+    }
+
+    const retryBtn = document.querySelector('.retry-btn');
+    if (retryBtn) {
+        retryBtn.addEventListener('click', () => this.restartGame());
+    }
+} // Правильное закрытие метода
     handleResize() {
         const isMobile = window.innerWidth < 768;
         this.canvas.width = isMobile ? window.innerWidth : 1024;
