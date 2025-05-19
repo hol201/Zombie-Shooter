@@ -501,9 +501,11 @@ class ZombieShooter {
             });
         });
                 const audioBtn = document.getElementById('audioEnableBtn');
-if (audioBtn) {
-    audioBtn.addEventListener('click', () => {...});
-}
+                if (audioBtn) {
+                    audioBtn.addEventListener('click', () => {
+                        this.enableAudio();
+                    }); 
+                }
     enableAudio() {
         this.audioEnabled = true;
         document.getElementById('audioEnableBtn').textContent = '🔊 Звук включен';
