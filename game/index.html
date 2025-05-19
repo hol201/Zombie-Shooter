@@ -183,7 +183,7 @@
             flex-direction: column;
             gap: 5px;
             z-index: 10000;
-            display: none;
+            
         }
 
         .weapon-icon {
@@ -244,7 +244,7 @@
                 font-size: 0.9em;
                 padding: 8px;
             }
-            
+        }
             #mainMenu h1 {
                 font-size: 2em;
                 margin-bottom: 15px;
@@ -266,6 +266,8 @@
             <button class="menu-btn" data-character="p2">Персонаж 2</button>
         </div>
         <button class="menu-btn" id="startBtn">Старт</button>
+        <!-- В разделе #mainMenu после кнопки Старт -->
+        <button class="menu-btn" id="audioStarter">🔊 Включить звук</button>
     </div>
     
     <div id="gameContainer">
@@ -377,28 +379,28 @@ class ZombieShooter {
                 p2: await this.loadPlayerSprites('p2')
             },
             weapons: {
-                pistol: await loadImage('/static/images/weapons/pistol.png'),
-                knife: await loadImage('/static/images/weapons/knife.png'),
-                axe: await loadImage('/static/images/weapons/axe.png')
+                pistol: await loadImage('static/images/weapons/pistol.png'),
+                knife: await loadImage('static/images/weapons/knife.png'),
+                axe: await loadImage('static/images/weapons/axe.png')
             },
             zombies: {
-                walk: await loadImage('/static/images/zombies/walk.png'),
-                death: await loadImage('/static/images/zombies/death.png')
+                walk: await loadImage('static/images/zombies/walk.png'),
+                death: await loadImage('static/images/zombies/death.png')
             },
             effects: {
-                blood: await loadImage('/static/images/effects/blood.png'),
-                bullet: await loadImage('/static/images/effects/bullet.png')
+                blood: await loadImage('static/images/effects/blood.png'),
+                bullet: await loadImage('static/images/effects/bullet.png')
             },
             powerups: {
-                medkit: await loadImage('/static/images/powerups/medkit.png'),
-                ammo: await loadImage('/static/images/powerups/ammo.png')
+                medkit: await loadImage('static/images/powerups/medkit.png'),
+                ammo: await loadImage('static/images/powerups/ammo.png')
             },
-            bg: await loadImage('/static/images/ui/background.jpg')
+            bg: await loadImage('static/images/ui/background.jpg')
         };
     }
 
     async loadPlayerSprites(player) {
-        const basePath = `/static/images/players/${player}/`;
+        const basePath = `static/images/players/${player}/`;
         const paths = {
             idle: basePath + 'idle.png',
             walk: basePath + 'walk.png',
@@ -421,22 +423,25 @@ class ZombieShooter {
     }
 
     async loadSounds() {
-        const loadSound = path => {
-            const audio = new Audio(path.startsWith('/') ? path : '/' + path);
-            audio.preload = 'auto';
-            return audio;
-        };
+    const testAudio = new Audio();
+    const ext = testAudio.canPlayType('audio/mp3') ? 'mp3' : 'ogg';
 
-        this.sounds = {
-            shoot: loadSound('/static/sounds/shoot.mp3'),
-            melee: loadSound('/static/sounds/melee.mp3'),
-            zombieDeath: loadSound('/static/sounds/zombie_death.mp3'),
-            pickup: loadSound('/static/sounds/pickup.mp3'),
-            player1Hurt: loadSound('/static/sounds/player1Hurt.mp3'),
-            player2Hurt: loadSound('/static/sounds/player2Hurt.mp3'),
-            gameOver: loadSound('/static/sounds/gameOver.mp3'),
-            bgm: loadSound('/static/sounds/bgm.mp3'),
-            gameMusic: loadSound('/static/sounds/game_music.mp3')
+    const load = name => {
+    const audio = new Audio(`static/sounds/${name}.${ext}`);
+    audio.crossOrigin = 'anonymous'; // ← Добавить эту строку
+    return audio;
+};
+    
+    this.sounds = {
+        shoot: load('shoot'),
+        melee: load('melee'),
+        zombieDeath: load('zombie_death'),
+        pickup: loadSound('static/sounds/pickup.mp3'),
+        player1Hurt: loadSound('static/sounds/player1Hurt.mp3'),
+        player2Hurt: loadSound('static/sounds/player2Hurt.mp3'),
+        gameOver: loadSound('static/sounds/gameOver.mp3'),
+        bgm: loadSound('static/sounds/bgm.mp3'),
+        gameMusic: loadSound('static/sounds/game_music.mp3')
         };
 
         this.sounds.bgm.loop = true;
