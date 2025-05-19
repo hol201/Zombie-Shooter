@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Zombie Shooter</title>
     <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="./static/images/ui/icon-192.png">
+    <link rel="apple-touch-icon" href="./static/images/ui/icon-192.png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { overflow: hidden; touch-action: none; font-family: Arial, sans-serif; background: #000; }
@@ -360,7 +362,6 @@ class ZombieShooter {
         } catch (error) {
         console.error('Ошибка инициализации:', error);
         alert('Ошибка загрузки ресурсов! Проверьте консоль для деталей.');
-        // Добавить логирование всех ошибок
         if (error instanceof Error) console.error(error.stack);
     }
 }
@@ -388,23 +389,23 @@ class ZombieShooter {
             p2: await this.loadPlayerSprites('p2')
         },
         weapons: {
-            pistol: await loadImage('./static/images/weapons/pistol.png'),
-            knife: await loadImage('./static/images/weapons/knife.png'),
-            axe: await loadImage('./static/images/weapons/axe.png')
+            pistol: await loadImage('static/images/weapons/pistol.png'),
+            knife: await loadImage('static/images/weapons/knife.png'),
+            axe: await loadImage('static/images/weapons/axe.png')
         },
             zombies: {
-                walk: await loadImage('./static/images/zombies/walk.png'),
-                death: await loadImage('./static/images/zombies/death.png')
+                walk: await loadImage('static/images/zombies/walk.png'),
+                death: await loadImage('static/images/zombies/death.png')
             },
             effects: {
-                blood: await loadImage('./static/images/effects/blood.png'),
-                bullet: await loadImage('./static/images/effects/bullet.png')
+                blood: await loadImage('static/images/effects/blood.png'),
+                bullet: await loadImage('static/images/effects/bullet.png')
             },
             powerups: {
-                medkit: await loadImage('./static/images/powerups/medkit.png'),
-                ammo: await loadImage('./static/images/powerups/ammo.png')
+                medkit: await loadImage('static/images/powerups/medkit.png'),
+                ammo: await loadImage('static/images/powerups/ammo.png')
             },
-            bg: await loadImage('./static/images/ui/background.jpg')
+            bg: await loadImage('static/images/ui/background.jpg')
         };
     }
 
@@ -434,7 +435,7 @@ class ZombieShooter {
     async loadSounds() {
     const load = async (name) => {
         try {
-            const audio = new Audio(`./static/sounds/${name}.mp3`);
+            const audio = new Audio(`static/sounds/${name}.mp3`);
             await new Promise((resolve, reject) => {
                 audio.oncanplaythrough = resolve;
                 audio.onerror = () => reject(`Sound error: ${name}`);
@@ -1071,11 +1072,6 @@ class ZombieShooter {
 }
 
 window.addEventListener('load', () => {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('ServiceWorker зарегистрирован'))
-            .catch(err => console.log('Ошибка ServiceWorker', err));
-    }
     new ZombieShooter();
 });
 </script>
