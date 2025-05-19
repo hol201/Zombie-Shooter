@@ -364,41 +364,50 @@ class ZombieShooter {
     }
 
     async loadAssets() {
-        const loadImage = path => new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = (e) => reject(`Error loading ${path}: ${e}`);
-    img.src = path.startsWith('/') ? path : '/' + path;
-});
+    const loadImage = async (path) => {
+        try {
+            const img = new Image();
+            img.src = path;
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = () => reject(`Failed to load: ${path}`);
+            });
+            return img;
+        } catch (error) {
+            console.error(error);
+            throw new Error(`Asset load error: ${path}`);
+        }
+    };
 
-        this.assets = {
-            players: {
-                p1: await this.loadPlayerSprites('p1'),
-                p2: await this.loadPlayerSprites('p2')
-            },
-            weapons: {
-                pistol: await loadImage('static/images/weapons/pistol.png'),
-                knife: await loadImage('static/images/weapons/knife.png'),
-                axe: await loadImage('static/images/weapons/axe.png')
-            },
+    // Загрузка с правильными путями
+    this.assets = {
+        players: {
+            p1: await this.loadPlayerSprites('p1'),
+            p2: await this.loadPlayerSprites('p2')
+        },
+        weapons: {
+            pistol: await loadImage('./static/images/weapons/pistol.png'),
+            knife: await loadImage('./static/images/weapons/knife.png'),
+            axe: await loadImage('./static/images/weapons/axe.png')
+        },
             zombies: {
-                walk: await loadImage('static/images/zombies/walk.png'),
-                death: await loadImage('static/images/zombies/death.png')
+                walk: await loadImage('./static/images/zombies/walk.png'),
+                death: await loadImage('./static/images/zombies/death.png')
             },
             effects: {
-                blood: await loadImage('static/images/effects/blood.png'),
-                bullet: await loadImage('static/images/effects/bullet.png')
+                blood: await loadImage('./static/images/effects/blood.png'),
+                bullet: await loadImage('./static/images/effects/bullet.png')
             },
             powerups: {
-                medkit: await loadImage('static/images/powerups/medkit.png'),
-                ammo: await loadImage('static/images/powerups/ammo.png')
+                medkit: await loadImage('./static/images/powerups/medkit.png'),
+                ammo: await loadImage('./static/images/powerups/ammo.png')
             },
-            bg: await loadImage('static/images/ui/background.jpg')
+            bg: await loadImage('./static/images/ui/background.jpg')
         };
     }
 
     async loadPlayerSprites(player) {
-        const basePath = `static/images/players/${player}/`;
+        const basePath = `./static/images/players/${player}/`;
         const paths = {
             idle: basePath + 'idle.png',
             walk: basePath + 'walk.png',
@@ -421,14 +430,22 @@ class ZombieShooter {
     }
 
     async loadSounds() {
-    const load = name => {
-        const audio = new Audio(`static/sounds/${name}.mp3`);
-        audio.crossOrigin = 'anonymous';
-        return audio;
+    const load = async (name) => {
+        try {
+            const audio = new Audio(`./static/sounds/${name}.mp3`);
+            await new Promise((resolve, reject) => {
+                audio.oncanplaythrough = resolve;
+                audio.onerror = () => reject(`Sound error: ${name}`);
+            });
+            return audio;
+        } catch (error) {
+            console.error(error);
+            return new Audio(); // Возвращаем пустой звук как заглушку
+        }
     };
-    
+
     this.sounds = {
-        shoot: load('shoot'),
+        shoot: await load('shoot'),
         melee: load('melee'),
         zombieDeath: load('zombie_death'),
         pickup: load('pickup'),
@@ -443,7 +460,7 @@ class ZombieShooter {
     this.sounds.bgm.volume = 0.5;
     this.sounds.gameMusic.loop = true;
     this.sounds.gameMusic.volume = 1;
-} // Закрываем метод здесь
+} 
 
     setupEventListeners() {
         window.addEventListener('keydown', e => this.keys[e.code] = true);
