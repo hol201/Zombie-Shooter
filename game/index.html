@@ -452,16 +452,16 @@ class ZombieShooter {
 
     async loadSounds() {
     const load = async (name) => {
-        try {
-            const audio = new Audio(`./static/sounds/${name}.mp3`);
-            audio.muted = true; // Начинаем с выключенным звуком
-            await audio.load();
-            return audio;
-        } catch (error) {
-            console.error(error);
-            return new Audio();
-        }
-    };
+    try {
+        const audio = new Audio(`./static/sounds/${name}.mp3`);
+        console.log(`Загрузка: ${name}.mp3`); // Логирование
+        await audio.load();
+        return audio;
+    } catch (error) {
+        console.error(`Ошибка загрузки ${name}:`, error);
+        return new Audio();
+    }
+};
 
     this.sounds = {
         shoot: await load('shoot'),
@@ -554,10 +554,10 @@ class ZombieShooter {
 
     startGame() {
         if (this.audioEnabled) {
-            this.sounds.bgm.pause();
-            this.sounds.gameMusic.currentTime = 0;
-            this.sounds.gameMusic.play();
-        }
+    this.sounds.gameMusic.play().catch(e => {
+        console.log('Требуется взаимодействие с игрой перед воспроизведением');
+    });
+}
         this.sounds.bgm.pause();
         this.sounds.gameMusic.currentTime = 0;
         this.sounds.gameMusic.play();
