@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Zombie Shooter</title>
     <link rel="manifest" href="./manifest.json">
@@ -320,6 +321,8 @@
    
 
 <script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
 const DIFFICULTY = {
     easy: { dmg: 0.05, spawn: 2000, pistolAmmo: Infinity, speed: 1.5, powerupChance: 0.3 },
     normal: { dmg: 0.1, spawn: 1500, pistolAmmo: 60, speed: 2.0, powerupChance: 0.5 },
@@ -499,20 +502,29 @@ class ZombieShooter {
                 this.state.players[0].currentWeapon = e.target.dataset.weapon;
             });
         });
-                document.getElementById('audioEnableBtn').addEventListener('click', () => {
-            this.enableAudio();
-        });
-    }
+                const audioBtn = document.getElementById('audioEnableBtn');
+if (audioBtn) {
+    audioBtn.addEventListener('click', () => {...});
+}
     enableAudio() {
         this.audioEnabled = true;
         document.getElementById('audioEnableBtn').textContent = '🔊 Звук включен';
         this.playBGM();
     }
         
-        document.getElementById('startBtn')?.addEventListener('click', () => this.startGame());
-        document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
-        document.querySelector('.retry-btn').addEventListener('click', () => this.restartGame());
-    }
+        const startBtn = document.getElementById('startBtn');
+if (startBtn) {
+    startBtn.addEventListener('click', () => this.startGame());
+};
+        const pauseBtn = document.getElementById('pauseBtn');
+if (pauseBtn) {
+    pauseBtn.addEventListener('click', () => this.togglePause());
+}
+
+const retryBtn = document.querySelector('.retry-btn');
+if (retryBtn) {
+    retryBtn.addEventListener('click', () => this.restartGame());
+}
 
     handleResize() {
         const isMobile = window.innerWidth < 768;
