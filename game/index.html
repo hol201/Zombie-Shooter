@@ -358,10 +358,12 @@ class ZombieShooter {
             this.handleResize();
             this.playBGM();
         } catch (error) {
-            console.error('Ошибка инициализации:', error);
-            alert('Ошибка загрузки ресурсов!');
-        }
+        console.error('Ошибка инициализации:', error);
+        alert('Ошибка загрузки ресурсов! Проверьте консоль для деталей.');
+        // Добавить логирование всех ошибок
+        if (error instanceof Error) console.error(error.stack);
     }
+}
 
     async loadAssets() {
     const loadImage = async (path) => {
