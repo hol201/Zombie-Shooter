@@ -365,11 +365,11 @@ class ZombieShooter {
 
     async loadAssets() {
         const loadImage = path => new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = () => reject(`Ошибка загрузки: ${path}`);
-            img.src = path.startsWith('/') ? path : '/' + path;
-        });
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(`Error loading ${path}: ${e}`);
+    img.src = path.startsWith('/') ? path : '/' + path;
+});
 
         this.assets = {
             players: {
@@ -438,13 +438,12 @@ class ZombieShooter {
         bgm: load('bgm'),
         gameMusic: load('game_music')
     };
-}
 
-        this.sounds.bgm.loop = true;
-        this.sounds.bgm.volume = 0.5;
-        this.sounds.gameMusic.loop = true;
-        this.sounds.gameMusic.volume = 1;
-    }
+    this.sounds.bgm.loop = true;
+    this.sounds.bgm.volume = 0.5;
+    this.sounds.gameMusic.loop = true;
+    this.sounds.gameMusic.volume = 1;
+} // Закрываем метод здесь
 
     setupEventListeners() {
         window.addEventListener('keydown', e => this.keys[e.code] = true);
@@ -474,7 +473,7 @@ class ZombieShooter {
             this.sounds.gameMusic.play();
             this.sounds.gameMusic.muted = false;
         });
-        document.getElementById('startBtn').addEventListener('click', () => this.startGame());
+        document.getElementById('startBtn')?.addEventListener('click', () => this.startGame());
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
         document.querySelector('.retry-btn').addEventListener('click', () => this.restartGame());
     }
