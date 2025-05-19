@@ -204,7 +204,16 @@
             border-color: #3498db;
             transform: scale(1.1);
         }
+        #audioEnableBtn {
+    background: rgba(241, 196, 15, 0.8) !important;
+    width: 200px !important;
+    transition: all 0.3s;
+}
 
+#audioEnableBtn:hover {
+    transform: scale(1.1);
+    background: rgba(241, 196, 15, 1) !important;
+}
         #gameOverOverlay {
             position: fixed;
             top: 0;
@@ -262,6 +271,9 @@
             <button class="menu-btn" data-difficulty="easy">Легкий</button>
             <button class="menu-btn active" data-difficulty="normal">Средний</button>
             <button class="menu-btn" data-difficulty="hard">Сложный</button>
+            <button id="audioEnableBtn" class="menu-btn" style="margin-top: 20px;">
+    🔇 Включить звук
+</button>
         </div>
         <div class="character-section">
             <button class="menu-btn active" data-character="p1">Персонаж 1</button>
@@ -349,6 +361,7 @@ class ZombieShooter {
             axe: { frames: 4, duration: 200 }
         };
         this.init();
+        this.audioEnabled = false;
     }
 
     async init() {
@@ -435,15 +448,13 @@ class ZombieShooter {
     async loadSounds() {
     const load = async (name) => {
         try {
-            const audio = new Audio(`static/sounds/${name}.mp3`);
-            await new Promise((resolve, reject) => {
-                audio.oncanplaythrough = resolve;
-                audio.onerror = () => reject(`Sound error: ${name}`);
-            });
+            const audio = new Audio(`./static/sounds/${name}.mp3`);
+            audio.muted = true; // Начинаем с выключенным звуком
+            await audio.load();
             return audio;
         } catch (error) {
             console.error(error);
-            return new Audio(); // Возвращаем пустой звук как заглушку
+            return new Audio();
         }
     };
 
@@ -488,7 +499,15 @@ class ZombieShooter {
                 this.state.players[0].currentWeapon = e.target.dataset.weapon;
             });
         });
-        
+                document.getElementById('audioEnableBtn').addEventListener('click', () => {
+            this.enableAudio();
+        });
+    }
+    enableAudio() {
+        this.audioEnabled = true;
+        document.getElementById('audioEnableBtn').textContent = '🔊 Звук включен';
+        this.playBGM();
+    }
         
         document.getElementById('startBtn')?.addEventListener('click', () => this.startGame());
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
@@ -521,6 +540,11 @@ class ZombieShooter {
     }
 
     startGame() {
+        if (this.audioEnabled) {
+            this.sounds.bgm.pause();
+            this.sounds.gameMusic.currentTime = 0;
+            this.sounds.gameMusic.play();
+        }
         this.sounds.bgm.pause();
         this.sounds.gameMusic.currentTime = 0;
         this.sounds.gameMusic.play();
@@ -1027,20 +1051,32 @@ class ZombieShooter {
         }
     }
 
-    playBGM() {
-        if (this.sounds.bgm.paused) {
-            this.sounds.bgm.play().catch(e => console.warn('Ошибка музыки меню:', e));
+   playBGM() {
+    if (!this.audioEnabled) return;
+    
+    try {
+        this.sounds.bgm.muted = false;
+        const promise = this.sounds.bgm.play();
+        
+        if (promise !== undefined) {
+            promise.then(_ => {}).catch(error => {
+                console.warn('Autoplay blocked:', error);
+                document.getElementById('audioEnableBtn').style.display = 'block';
+            });
         }
+    } catch (e) {
+        console.error('Audio error:', e);
     }
+}
 
     togglePause() {
-        this.isPaused = !this.isPaused;
-        if (this.isPaused) {
-            this.sounds.gameMusic.pause();
+    this.isPaused = !this.isPaused;
+    if (this.isPaused) {
+        if (this.audioEnabled) this.sounds.gameMusic.pause();
             document.getElementById('pauseBtn').textContent = '▶️';
             document.getElementById('mobileControls').style.opacity = '0.3';
-        } else {
-            this.sounds.gameMusic.play();
+       } else {
+        if (this.audioEnabled) this.sounds.gameMusic.play();
             document.getElementById('pauseBtn').textContent = '⏸️';
             document.getElementById('mobileControls').style.opacity = '1';
             this.lastTime = performance.now();
