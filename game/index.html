@@ -506,7 +506,7 @@ class ZombieShooter {
                         this.enableAudio();
                     }); 
                 }
-        }
+        
     enableAudio() {
         this.audioEnabled = true;
         document.getElementById('audioEnableBtn').textContent = '🔊 Звук включен';
@@ -526,7 +526,7 @@ const retryBtn = document.querySelector('.retry-btn');
 if (retryBtn) {
     retryBtn.addEventListener('click', () => this.restartGame());
 }
-
+}
     handleResize() {
         const isMobile = window.innerWidth < 768;
         this.canvas.width = isMobile ? window.innerWidth : 1024;
