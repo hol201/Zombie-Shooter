@@ -379,7 +379,7 @@ class ZombieShooter {
         }
     };
 
-    // Загрузка с правильными путями
+    
     this.assets = {
         players: {
             p1: await this.loadPlayerSprites('p1'),
@@ -407,7 +407,7 @@ class ZombieShooter {
     }
 
     async loadPlayerSprites(player) {
-        const basePath = `./static/images/players/${player}/`;
+        const basePath = `static/images/players/${player}/`;
         const paths = {
             idle: basePath + 'idle.png',
             walk: basePath + 'walk.png',
@@ -486,10 +486,7 @@ class ZombieShooter {
             });
         });
         
-        document.getElementById('audioStarter').addEventListener('click', () => {
-            this.sounds.gameMusic.play();
-            this.sounds.gameMusic.muted = false;
-        });
+        
         document.getElementById('startBtn')?.addEventListener('click', () => this.startGame());
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
         document.querySelector('.retry-btn').addEventListener('click', () => this.restartGame());
