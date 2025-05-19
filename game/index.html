@@ -115,7 +115,6 @@
             position: fixed;
             bottom: 650px;
             left: 10px;
-            z-index: 10000;
             background: rgba(0,0,0,0.7);
             padding: 10px 15px;
             border-radius: 8px;
@@ -238,17 +237,18 @@
             transition: transform 0.2s;
         }
 
-        @media (max-width: 768px) {
-            .menu-btn {
-                width: 120px;
-                font-size: 0.9em;
-                padding: 8px;
-            }
-        }
-            #mainMenu h1 {
-                font-size: 2em;
-                margin-bottom: 15px;
-            }
+       @media (max-width: 768px) {
+    .menu-btn {
+        width: 120px;
+        font-size: 0.9em;
+        padding: 8px;
+    }
+    
+    #mainMenu h1 {
+        font-size: 2em;
+        margin-bottom: 15px;
+    }
+} /* Добавить закрывающую скобку */
         
     </style>
 </head>
@@ -305,7 +305,7 @@
         <button class="retry-btn">Играть снова</button>
     </div>
 
-    <button id="audioStarter" style="display:none;"></button>
+   
 
 <script>
 const DIFFICULTY = {
@@ -427,22 +427,23 @@ class ZombieShooter {
     const ext = testAudio.canPlayType('audio/mp3') ? 'mp3' : 'ogg';
 
     const load = name => {
-    const audio = new Audio(`static/sounds/${name}.${ext}`);
-    audio.crossOrigin = 'anonymous'; // ← Добавить эту строку
-    return audio;
-};
+        const audio = new Audio(`static/sounds/${name}.${ext}`);
+        audio.crossOrigin = 'anonymous';
+        return audio;
+    };
     
     this.sounds = {
-        shoot: load('static/sounds/shoot.mp3'),
-        melee: load('static/sounds/melee.mp3'),
-        zombieDeath: load('static/sounds/zombie_death.mp3'),
-        pickup: loadSound('static/sounds/pickup.mp3'),
-        player1Hurt: loadSound('static/sounds/player1Hurt.mp3'),
-        player2Hurt: loadSound('static/sounds/player2Hurt.mp3'),
-        gameOver: loadSound('static/sounds/gameOver.mp3'),
-        bgm: loadSound('static/sounds/bgm.mp3'),
-        gameMusic: loadSound('static/sounds/game_music.mp3')
-        };
+        shoot: load('shoot'),
+        melee: load('melee'),
+        zombieDeath: load('zombie_death'),
+        pickup: load('pickup'),
+        player1Hurt: load('player1Hurt'),
+        player2Hurt: load('player2Hurt'),
+        gameOver: load('gameOver'),
+        bgm: load('bgm'),
+        gameMusic: load('game_music')
+    };
+}
 
         this.sounds.bgm.loop = true;
         this.sounds.bgm.volume = 0.5;
