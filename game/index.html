@@ -446,14 +446,14 @@ class ZombieShooter {
 
     this.sounds = {
         shoot: await load('shoot'),
-        melee: load('melee'),
-        zombieDeath: load('zombie_death'),
-        pickup: load('pickup'),
-        player1Hurt: load('player1Hurt'),
-        player2Hurt: load('player2Hurt'),
-        gameOver: load('gameOver'),
-        bgm: load('bgm'),
-        gameMusic: load('game_music')
+        melee: await load('melee'),
+        zombieDeath: await load('zombie_death'),
+        pickup: await load('pickup'),
+        player1Hurt: await load('player1Hurt'),
+        player2Hurt: await load('player2Hurt'),
+        gameOver: await load('gameOver'),
+        bgm: await load('bgm'),
+        gameMusic: await load('game_music')
     };
 
     this.sounds.bgm.loop = true;
