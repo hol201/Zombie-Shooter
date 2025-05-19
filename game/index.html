@@ -423,11 +423,8 @@ class ZombieShooter {
     }
 
     async loadSounds() {
-    const testAudio = new Audio();
-    const ext = testAudio.canPlayType('audio/mp3') ? 'mp3' : 'ogg';
-
     const load = name => {
-        const audio = new Audio(`static/sounds/${name}.${ext}`);
+        const audio = new Audio(`static/sounds/${name}.mp3`);
         audio.crossOrigin = 'anonymous';
         return audio;
     };
